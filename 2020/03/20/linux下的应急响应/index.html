@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"lnva9say.top","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="收集">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux下的应急响应">
+<meta property="og:url" content="https://lnva9say.top/2020/03/20/linux%E4%B8%8B%E7%9A%84%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/index.html">
+<meta property="og:site_name" content="baishuo">
+<meta property="og:description" content="收集">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-03-20T14:55:07.000Z">
+<meta property="article:modified_time" content="2020-04-18T09:54:43.179Z">
+<meta property="article:author" content="baishuo">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://lnva9say.top/2020/03/20/linux%E4%B8%8B%E7%9A%84%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>linux下的应急响应 | baishuo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">baishuo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lnva9say.top/2020/03/20/linux%E4%B8%8B%E7%9A%84%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/baishuo.jpg">
+      <meta itemprop="name" content="baishuo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="baishuo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          linux下的应急响应
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-20 22:55:07" itemprop="dateCreated datePublished" datetime="2020-03-20T22:55:07+08:00">2020-03-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-18 17:54:43" itemprop="dateModified" datetime="2020-04-18T17:54:43+08:00">2020-04-18</time>
+              </span>
+
+          
+            <div class="post-description">收集</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>有一来说一，无论是自己服务器、电脑还是学校、朋友或是在工作上。难免会遇到各式样的服务不正常、机器被挖狂、环境崩溃等现象。为少些烦恼，为少些许脑壳疼，总结一下</p>
+<h3 id="查明原因"><a href="#查明原因" class="headerlink" title="查明原因"></a>查明原因</h3><h3 id="0x01-初步判断"><a href="#0x01-初步判断" class="headerlink" title="0x01 初步判断"></a>0x01 初步判断</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">1、查看cpu、内存等与平时相比是否正常，云服务器可在控制台查看，若CPU占用率超过%70，大概率被挖洞 或者命令行使用top命令</span><br><span class="line">cat &#x2F;proc&#x2F;cpuinfo #查看CPU信息</span><br><span class="line"></span><br><span class="line">2、查看进程 ： ps -aux</span><br><span class="line"></span><br><span class="line">3、查看主机历史命令：history</span><br><span class="line"></span><br><span class="line">4、根据时间查看做了什么： history | grep &#39;2017-2-12&#39;  </span><br><span class="line"></span><br><span class="line">5、提权痕迹 : cat &#x2F;etc&#x2F;passwd lsof -g gid号 通常能找到恶意文件关联的lib文件</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="0x02-web服务"><a href="#0x02-web服务" class="headerlink" title="0x02 web服务"></a>0x02 web服务</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1、查找24小时内被修改的文件: find .&#x2F; -mtime 0 -nmap &quot;*.文件后缀&quot;</span><br><span class="line"></span><br><span class="line">2、对web文件进行D盾查杀</span><br><span class="line"></span><br><span class="line">3、扫描日志文件特招：egrep &#39;(select|script|acunetix|sqlmap)&#39; &#x2F;var&#x2F;log&#x2F;httpd&#x2F;access_log</span><br><span class="line"></span><br><span class="line">4、关注POST请求： grep &#39;POST&#39; &#x2F;var&#x2F;log&#x2F;httpd&#x2F;access_log | awk &#39;&#123;print $1&#125;&#39; | sort | uniq -c | sort -nr</span><br><span class="line"></span><br><span class="line">5、Content-Length过大的请求： awk &#39;&#123;if($10&gt;5000000)&#123;print $0&#125;&#125;&#39; &#x2F;var&#x2F;log&#x2F;httpd&#x2F;access_log</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="0x03-SSH服务"><a href="#0x03-SSH服务" class="headerlink" title="0x03 SSH服务"></a>0x03 SSH服务</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1、查看登陆成功信息 ： grep &#39;Accepted&#39; &#x2F;var&#x2F;log&#x2F;secure | awk &#39;&#123;print $11&#125;&#39; | sort | uniq -c | sort -nr</span><br><span class="line"></span><br><span class="line">2、登陆失败 ： grep &#39;Failed&#39; &#x2F;var&#x2F;log&#x2F;secure | awk &#39;&#123;print $11&#125;&#39; | sort | uniq -c | sort -nr</span><br><span class="line"></span><br><span class="line">3、lastb命令 ：会读取&#x2F;var&#x2F;log&#x2F;btmp的文件</span><br><span class="line"></span><br><span class="line">4、strings检查&#x2F;usr&#x2F;sbin&#x2F;sshd，看是否有邮箱信息</span><br><span class="line"></span><br><span class="line">5、开机启动项排查： more &#x2F;etc&#x2F;rc.local  、 &#x2F;etc&#x2F;rc.d&#x2F;rc[0~6].d 、 ls -l &#x2F;etc&#x2F;rc.d&#x2F;rc3.d&#x2F;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="0x04-网络连接"><a href="#0x04-网络连接" class="headerlink" title="0x04 网络连接"></a>0x04 网络连接</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1、查看已经建立的网络连接，例如反弹bash ： netstat -antlp | grep EST | grep bash 、netstat -antlp | grep LISTEN</span><br><span class="line"></span><br><span class="line">2、检查可以监听端口 ： netstat -antlp | grep LISTEN | grep 1080</span><br></pre></td></tr></table></figure>
+
+<h3 id="0x05-敏感目录"><a href="#0x05-敏感目录" class="headerlink" title="0x05 敏感目录"></a>0x05 敏感目录</h3><p>/tmp, /var/tmp, /dev/shm，所有用户都可读，可写，可执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ls -ald &#x2F;var&#x2F;tmp&#x2F;</span><br><span class="line">ls -ald &#x2F;tmp&#x2F;</span><br><span class="line">ls -ald &#x2F;dev&#x2F;shm</span><br></pre></td></tr></table></figure>
+
+<h3 id="0x06-文件方面"><a href="#0x06-文件方面" class="headerlink" title="0x06 文件方面"></a>0x06 文件方面</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1、定位含有S位权限的文件 : find &#x2F; -perm -004000 -type f</span><br><span class="line">2、检查最近一段时间内更改的文件 ： find &#x2F;home&#x2F;work -type f -mtime T</span><br><span class="line">3、查看计划任务 ： crontab -l   （cd &#x2F;etc&#x2F;crontab）</span><br><span class="line">4、日志： </span><br><span class="line">定位有多少IP在爆破主机的 root 帐号： grep “Failed password for root” &#x2F;var&#x2F;log&#x2F;secure | awk ‘&#123;print $11&#125;’ | sort | uniq -c | sort -nr | more</span><br><span class="line">定位有哪些 IP 在爆破：grep “Failed password” &#x2F;var&#x2F;log&#x2F;secure|grep -E -o “(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)”|uniq -c</span><br></pre></td></tr></table></figure>
+
+<h3 id="0x07常用命令总结"><a href="#0x07常用命令总结" class="headerlink" title="0x07常用命令总结"></a>0x07常用命令总结</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">1、env #查看环境变量资源</span><br><span class="line">2、echo $PATH #系统环境变量</span><br><span class="line">3、cat $HOME&#x2F;.ssh&#x2F;authorized_keys #查看ssh永久链接文件</span><br><span class="line">4、grep MemFree &#x2F;proc&#x2F;meminfo #查看空闲内存量</span><br><span class="line">5、find &#x2F; *.jsp -perm 777 #查找777权限的jsp文件</span><br><span class="line">6、iptables -L #查看防火墙设置</span><br><span class="line">7、route -n #查看路由表</span><br><span class="line">8、netstat -ap|grep &#39;:22&#39; #筛选22端口的进程</span><br><span class="line">9、netstat -lntp #查看所有监听端口</span><br><span class="line">10、netstat -antp #查看所有已经建立的连接</span><br><span class="line">11、ps -aux|grep python|cut -d ‘ ‘ -f 2|xargs kill #杀死python相关进程</span><br><span class="line">12、#隐藏进程查看</span><br><span class="line">ps -ef|awk &#39;&#123;print&#125;&#39;|sort -n|uniq &gt;1</span><br><span class="line">ls &#x2F;proc|sort -n|uniq &gt;2</span><br><span class="line">more diff 1 2</span><br><span class="line">13、uptime #查看系统运行时间、用户数、负载</span><br><span class="line">14、cat &#x2F;etc&#x2F;passwd|grep -E &quot;&#x2F;bin&#x2F;bash$&quot; #查看能够登录的帐号</span><br><span class="line">15、awk &#39;&#x2F;\$1|\$6&#x2F;&#123;print $1&#125;&#39; &#x2F;etc&#x2F;shadow #查询可以远程登录的账号</span><br><span class="line">16、systemctl|grep running #只查看正在运行的服务</span><br></pre></td></tr></table></figure>
+
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/20/TP5-2x%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" rel="prev" title="TP5.2x反序列化漏洞分析">
+      <i class="fa fa-chevron-left"></i> TP5.2x反序列化漏洞分析
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/23/CSP%E7%AD%96%E7%95%A5%E7%9A%84%E7%BB%95%E8%BF%87/" rel="next" title="CSP策略的绕过总结">
+      CSP策略的绕过总结 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#查明原因"><span class="nav-number">1.1.</span> <span class="nav-text">查明原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x01-初步判断"><span class="nav-number">1.2.</span> <span class="nav-text">0x01 初步判断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x02-web服务"><span class="nav-number">1.3.</span> <span class="nav-text">0x02 web服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x03-SSH服务"><span class="nav-number">1.4.</span> <span class="nav-text">0x03 SSH服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x04-网络连接"><span class="nav-number">1.5.</span> <span class="nav-text">0x04 网络连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x05-敏感目录"><span class="nav-number">1.6.</span> <span class="nav-text">0x05 敏感目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x06-文件方面"><span class="nav-number">1.7.</span> <span class="nav-text">0x06 文件方面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x07常用命令总结"><span class="nav-number">1.8.</span> <span class="nav-text">0x07常用命令总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="baishuo"
+      src="/images/baishuo.jpg">
+  <p class="site-author-name" itemprop="name">baishuo</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">baishuo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

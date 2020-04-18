@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"lnva9say.top","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Windows身份认证机制主要有**NTLM**和**Kerberos**两种，其中NTLM主要被用在本地以及工作组环境，而在域环境中优先使用的是Kerberos。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="windows身份认证协议">
+<meta property="og:url" content="https://lnva9say.top/2020/04/07/windows%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81%E5%8D%8F%E8%AE%AE/index.html">
+<meta property="og:site_name" content="baishuo">
+<meta property="og:description" content="Windows身份认证机制主要有**NTLM**和**Kerberos**两种，其中NTLM主要被用在本地以及工作组环境，而在域环境中优先使用的是Kerberos。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-07T08:28:58.000Z">
+<meta property="article:modified_time" content="2020-04-18T09:55:42.622Z">
+<meta property="article:author" content="baishuo">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://lnva9say.top/2020/04/07/windows%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81%E5%8D%8F%E8%AE%AE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>windows身份认证协议 | baishuo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">baishuo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lnva9say.top/2020/04/07/windows%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81%E5%8D%8F%E8%AE%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/baishuo.jpg">
+      <meta itemprop="name" content="baishuo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="baishuo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          windows身份认证协议
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-07 16:28:58" itemprop="dateCreated datePublished" datetime="2020-04-07T16:28:58+08:00">2020-04-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-18 17:55:42" itemprop="dateModified" datetime="2020-04-18T17:55:42+08:00">2020-04-18</time>
+              </span>
+
+          
+            <div class="post-description">Windows身份认证机制主要有**NTLM**和**Kerberos**两种，其中NTLM主要被用在本地以及工作组环境，而在域环境中优先使用的是Kerberos。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="https://xz.aliyun.com/t/6600#toc-15" target="_blank" rel="noopener">https://xz.aliyun.com/t/6600#toc-15</a></p>
+<h4 id="Windows身份认证机制"><a href="#Windows身份认证机制" class="headerlink" title="Windows身份认证机制"></a>Windows身份认证机制</h4><p>Windows身份认证机制主要有<strong>NTLM</strong>和<strong>Kerberos</strong>两种，其中NTLM主要被用在本地以及工作组环境，而在域环境中优先使用的是Kerberos。</p>
+<h4 id="1、NTLM"><a href="#1、NTLM" class="headerlink" title="1、NTLM"></a>1、NTLM</h4><p>NTLM是windows中最常见的身份认证方式，主要有本地认证和网络认证。</p>
+<p>NTLM Hash：NTLM中最关键的凭证</p>
+<h5 id="本地认证：在本地认证过程中，当用户进行注销、重启、开机等需要认证的操作时，首先Windows会调用winlogon-exe进程（也就是我们平常见到的登录框）接收用户的密码。"><a href="#本地认证：在本地认证过程中，当用户进行注销、重启、开机等需要认证的操作时，首先Windows会调用winlogon-exe进程（也就是我们平常见到的登录框）接收用户的密码。" class="headerlink" title="本地认证：在本地认证过程中，当用户进行注销、重启、开机等需要认证的操作时，首先Windows会调用winlogon.exe进程（也就是我们平常见到的登录框）接收用户的密码。"></a>本地认证：在本地认证过程中，当用户进行注销、重启、开机等需要认证的操作时，首先Windows会调用<code>winlogon.exe</code>进程（也就是我们平常见到的登录框）接收用户的密码。</h5><h5 id="网络认证"><a href="#网络认证" class="headerlink" title="网络认证"></a>网络认证</h5><p>工作组环境：网络认证需要使用NTLM协议，该协议基于<strong>挑战（Challenge）/响应（Response）</strong>机制。</p>
+<p>域环境：域环境中虽然默认首选是kerberos认证，但是也可以使用NTLM来进行认证。其实NTLM在域环境与工作组环境中的差异不大，区别主要是最终在域控(DC)中完成验证。</p>
+<h5 id="NTML的缺陷："><a href="#NTML的缺陷：" class="headerlink" title="NTML的缺陷："></a>NTML的缺陷：</h5><p>了解整个过程之后我们可以发现，在整个过程中用户的明文密码并没有在客户端和服务端之间传输，取而代之的是NTLM Hash。因此如果攻击者得到了用户的NTLM Hash，那么便可以冒充该用户通过身份验证（也就是说不需要破解出明文密码就可以通过验证），这就是hash传递攻击(Pass The Hash)。</p>
+<h4 id="2、Kerberos"><a href="#2、Kerberos" class="headerlink" title="2、Kerberos"></a>2、Kerberos</h4><p>Kerberos实际上是一种基于票据（Ticket）的认证方式。客户端要访问服务器的资源，需要首先购买服务端认可的票据。也就是说，客户端在访问服务器之前需要预先买好票，等待服务验票之后才能入场。在这之前，客户端需要先买票，但是这张票不能直接购买，需要一张认购权证。客户端在买票之前需要预先获得一张认购权证。这张认购权证和进入服务器的入场券均有KDC发售。</p>
+<h5 id="过程中涉及到的专有名词有："><a href="#过程中涉及到的专有名词有：" class="headerlink" title="过程中涉及到的专有名词有："></a>过程中涉及到的专有名词有：</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">KDC(Key Distribution Center) : 密钥分发中心</span><br><span class="line">KAS(Kerberos Authentication Service) : kerberos认证服务</span><br><span class="line">TGT(Ticket Granting Ticket) : 认购权证</span><br><span class="line">TGS(Ticket Granting Service) : 票据授予服务</span><br><span class="line">ST(Service Ticket) : 服务票据</span><br></pre></td></tr></table></figure>
+
+<h5 id="流程："><a href="#流程：" class="headerlink" title="流程："></a>流程：</h5><p>1、获取TGT</p>
+<p>2、获取ST</p>
+<h4 id="3、Hash抓取"><a href="#3、Hash抓取" class="headerlink" title="3、Hash抓取"></a>3、Hash抓取</h4><p>1、WCE：该工具可以抓取用户的LM Hash和NTML Hash，需要administrator权限。测试绝大数杀软都会报毒，需要免杀。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wce.exe -lv</span><br></pre></td></tr></table></figure>
+
+<p>2、QuarkPwDump：也是导出用户LM Hash和NTLM Hash的，测试发现只有360和nod32等少数杀软报了毒，是否需要免杀视具体情况而定。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">QuarkPwDump.exe -dhl</span><br></pre></td></tr></table></figure>
+
+<p>3、Reg导出注册表本地分析</p>
+<p>这个需要system权限（在我的xp上测试竟然无限蓝屏重启，懵逼了。。），在win2003上可以测试成功：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">reg save hklm\sam sam.hive</span><br><span class="line">reg save hklm\system system.hive</span><br><span class="line">reg save hklm\security security.hive</span><br></pre></td></tr></table></figure>
+
+<p>然后导入到本地的mimikatz中：</p>
+<p>4、mimikatz：神器不必多说，mimikatz可以抓取上面提到的<code>lsass.exe</code>进程存储在内存中的明文密码，前提是该用户在该服务器上登录过</p>
+<p>需要administrator及以上权限，需要免杀</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">privilege::debug</span><br><span class="line">sekurlsa::logonpasswords</span><br></pre></td></tr></table></figure>
+
+<p>5、ProcDump导出数据本地分析</p>
+<p>这种方式最大的优势就是免杀，因为ProcDump是微软官方提供的。但缺点也很明显，导出的数据文件可能会很大（但我本地测试的时候速度还是很快的）。需要administrator及以上权限。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">procdump.exe -accepteula -ma lsass.exe lsass.dmp</span><br></pre></td></tr></table></figure>
+
+<p>之后可以下载到本地导入到mimikatz中进行读取</p>
+<h4 id="4、Hash传递攻击"><a href="#4、Hash传递攻击" class="headerlink" title="4、Hash传递攻击"></a>4、Hash传递攻击</h4><p>在渗透过程中，如果从lsass.exe进程得不到明文密码，并且拿到的用户hash也破解不出结果，我们就可以使用hash传递攻击</p>
+<p>从上面写的NTLM认证方式中我们可以了解到在NTLM认证过程中用户的明文密码是不在客户端和服务端之间传输的，认证最主要的凭据就是用户的NTLM Hash。</p>
+<p>那么当攻击者拿到用户的NTLM Hash时，攻击者完全可以只利用NTLM Hash与服务端完成身份认证的流程，达到冒充该用户的目的。</p>
+<h5 id="MSF"><a href="#MSF" class="headerlink" title="MSF"></a>MSF</h5><p>使用msf的<code>exploit/windows/smb/psexec</code>模块可以进行hash传递攻击，条件是目标开启445端口，而且没有打KB2871997和KB2928120这两个补丁</p>
+<h5 id="mimikatz"><a href="#mimikatz" class="headerlink" title="mimikatz"></a>mimikatz</h5><p>其实这个是在微软发布了KB2871997补丁之后mimikatz提供的解决办法，也被称为<strong>Over Pass-the-hash</strong></p>
+<p>工作组环境：</p>
+<p>域环境：</p>
+<h4 id="5、票据传递工具"><a href="#5、票据传递工具" class="headerlink" title="5、票据传递工具"></a>5、票据传递工具</h4><p><strong>票据传递攻击(Pass-The-Ticket)</strong>就是利用伪造的kerberos票据进行身份认证，该过程不需要密码。</p>
+<p>域中的票据又分为<strong>黄金票据(Golden Ticket)</strong>和<strong>白银票据(Silver Ticket)</strong>，其中黄金票据可以使攻击者直接提升为域管理权限，而白银票据则可以使攻击者访问特定的服务。</p>
+<h5 id="黄金票据"><a href="#黄金票据" class="headerlink" title="黄金票据"></a>黄金票据</h5><p>黄金票据的本质就是一张<strong>TGT(Ticket Granting Ticket)</strong>，攻击者使用krbtgt账户的hash伪造黄金票据，进而访问域中包括域控的所有服务器。该攻击过程发生在前面所说的<strong>获取ST</strong>的第<strong>1</strong>步</p>
+<h5 id="MS14-068"><a href="#MS14-068" class="headerlink" title="MS14-068"></a>MS14-068</h5><p>利用该漏洞可以将域内任何普通用户提升为域管权限，微软发布的补丁为：<code>kb3011780</code>。如果域控没有打上该补丁的话，攻击者就有可能利用该漏洞提升自己的权限</p>
+<p>首先我们使用一个普通域用户test登录到WIN7上，并记录该用户的sid：</p>
+<h5 id="mimikatz生成"><a href="#mimikatz生成" class="headerlink" title="mimikatz生成"></a>mimikatz生成</h5><p>使用mimikatz生成黄金票据需要以下几点条件：</p>
+<ul>
+<li>知道krbtgt的NTLM Hash或aes256</li>
+<li>知道krbtgt的sid</li>
+</ul>
+<p>该方法经常会用来做拿下域控后的权限维持，因为krbtgt账户的密码基本不会更改，即使域管的密码被修改krbtgt的密码也不会改变</p>
+<h5 id="白银票据"><a href="#白银票据" class="headerlink" title="白银票据"></a>白银票据</h5><p>白银票据的本质是一张ST(Service Ticket)，也就是使用要访问的服务器的hash来伪造白银票据。区别于黄金票据的是白银票据只能访问指定的服务，但白银票据的优点是于目标服务器不经过DC直接交互。</p>
+<p>对于白银票据的生成也有以下几点要求：</p>
+<ul>
+<li>目标服务账户的NTLM Hash</li>
+<li>目标服务器账户的sid</li>
+</ul>
+<h5 id="mimikatz生成-1"><a href="#mimikatz生成-1" class="headerlink" title="mimikatz生成"></a>mimikatz生成</h5><p>假设我们拿到目标服务账户的NTLM Hash和sid</p>
+<p>然后使用mimikatz生成一张可以访问WIN2003的白银票据：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kerberos::golden &#x2F;domain:&lt;所属域名称&gt; &#x2F;sid:&lt;服务账户sid&gt; &#x2F;target:&lt;目标服务器的FQDN&gt; &#x2F;service:&lt;要访问的服务&gt; &#x2F;rc4:&lt;服务账户NTLM Hash&gt; &#x2F;user:&lt;要伪造的用户&gt; &#x2F;ptt</span><br></pre></td></tr></table></figure>
+
+<p>之后就可以访问目标服务器上对应的服务</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/24/Laravel-5-8x-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" rel="prev" title="Laravel 5.8x 反序列化">
+      <i class="fa fa-chevron-left"></i> Laravel 5.8x 反序列化
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/04/09/%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8/" rel="next" title="横向移动">
+      横向移动 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Windows身份认证机制"><span class="nav-number">1.</span> <span class="nav-text">Windows身份认证机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1、NTLM"><span class="nav-number">2.</span> <span class="nav-text">1、NTLM</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#本地认证：在本地认证过程中，当用户进行注销、重启、开机等需要认证的操作时，首先Windows会调用winlogon-exe进程（也就是我们平常见到的登录框）接收用户的密码。"><span class="nav-number">2.1.</span> <span class="nav-text">本地认证：在本地认证过程中，当用户进行注销、重启、开机等需要认证的操作时，首先Windows会调用winlogon.exe进程（也就是我们平常见到的登录框）接收用户的密码。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#网络认证"><span class="nav-number">2.2.</span> <span class="nav-text">网络认证</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#NTML的缺陷："><span class="nav-number">2.3.</span> <span class="nav-text">NTML的缺陷：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、Kerberos"><span class="nav-number">3.</span> <span class="nav-text">2、Kerberos</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#过程中涉及到的专有名词有："><span class="nav-number">3.1.</span> <span class="nav-text">过程中涉及到的专有名词有：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#流程："><span class="nav-number">3.2.</span> <span class="nav-text">流程：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、Hash抓取"><span class="nav-number">4.</span> <span class="nav-text">3、Hash抓取</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、Hash传递攻击"><span class="nav-number">5.</span> <span class="nav-text">4、Hash传递攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#MSF"><span class="nav-number">5.1.</span> <span class="nav-text">MSF</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#mimikatz"><span class="nav-number">5.2.</span> <span class="nav-text">mimikatz</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5、票据传递工具"><span class="nav-number">6.</span> <span class="nav-text">5、票据传递工具</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#黄金票据"><span class="nav-number">6.1.</span> <span class="nav-text">黄金票据</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#MS14-068"><span class="nav-number">6.2.</span> <span class="nav-text">MS14-068</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#mimikatz生成"><span class="nav-number">6.3.</span> <span class="nav-text">mimikatz生成</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#白银票据"><span class="nav-number">6.4.</span> <span class="nav-text">白银票据</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#mimikatz生成-1"><span class="nav-number">6.5.</span> <span class="nav-text">mimikatz生成</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="baishuo"
+      src="/images/baishuo.jpg">
+  <p class="site-author-name" itemprop="name">baishuo</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">baishuo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
