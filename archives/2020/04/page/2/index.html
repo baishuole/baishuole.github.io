@@ -20,19 +20,15 @@
     var CONFIG = {"hostname":"lnva9say.top","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="复现">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Laravel 5.8x 反序列化">
-<meta property="og:url" content="https://lnva9say.top/2020/03/24/Laravel-5-8x-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/index.html">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="baishuo">
+<meta property="og:url" content="https://lnva9say.top/archives/2020/04/page/2/index.html">
 <meta property="og:site_name" content="baishuo">
-<meta property="og:description" content="复现">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-03-24T15:33:28.000Z">
-<meta property="article:modified_time" content="2020-04-18T09:54:33.649Z">
 <meta property="article:author" content="baishuo">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://lnva9say.top/2020/03/24/Laravel-5-8x-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">
+<link rel="canonical" href="https://lnva9say.top/archives/2020/04/page/2/">
 
 
 <script id="page-configurations">
@@ -40,12 +36,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : true,
+    isPost : false,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>Laravel 5.8x 反序列化 | baishuo</title>
+  <title>归档 | baishuo</title>
   
 
 
@@ -158,100 +154,54 @@
         <div class="content-wrap">
           
 
-          <div class="content post posts-expand">
+          <div class="content archive">
             
 
-    
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://lnva9say.top/2020/03/24/Laravel-5-8x-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/baishuo.jpg">
-      <meta itemprop="name" content="baishuo">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="baishuo">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          Laravel 5.8x 反序列化
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-24 23:33:28" itemprop="dateCreated datePublished" datetime="2020-03-24T23:33:28+08:00">2020-03-24</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-18 17:54:33" itemprop="dateModified" datetime="2020-04-18T17:54:33+08:00">2020-04-18</time>
-              </span>
-
-          
-            <div class="post-description">复现</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
+  
+  <div class="post-block">
+    <div class="posts-collapse">
+      <div class="collection-title">
+        <span class="collection-header">嗯..! 目前共计 16 篇日志。 继续努力。</span>
+      </div>
 
       
-        <h2 id="POP链"><a href="#POP链" class="headerlink" title="POP链"></a>POP链</h2><p>1、PendingBroadcast类__desruct</p>
-<p>2、Dispatcher类的dispatch方法</p>
-<p>3、commandShouldBeQueued方法PendingBroadcast的 $this-&gt;event -&gt;QueuedCommand   绕过dispatch中的if </p>
-<p>跟进dispatchToQueue()方法 call_user_func的$this-&gt;queueResolver可控,可定义调用任何方法</p>
-<p>$connect=QueuedCommand-&gt;connect</p>
-<p>4、找到命令执行点EvalLoader类中load方法中的eval()函数</p>
-<p>5、绕过class_exists   跟进getClassName()到MockDefinition类中</p>
-<p>6、跟进getName() $this-&gt;name 可控  返回一个不存在的类</p>
-<p>7、getName()=getClassName()=不存在的类回到EvalLoader类跳过if</p>
-<p>8、进到eval() 跟进getcode() 可控  可命令执行</p>
-<p>9、回到Dispatcher类中的dispatchToQueue() </p>
-<p>$this-&gt;events=dispatcher类中的$this-&gt;queueResolver   - &gt;  EvalLoader =类中的load方法</p>
-<p>$this-&gt;event -&gt; QueuedCommand</p>
-
+    <div class="collection-year">
+      <span class="collection-header">2020</span>
     </div>
 
-    
-    
-    
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
 
-      <footer class="post-footer">
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2020-04-07T16:28:58+08:00"
+              content="2020-04-07">
+          04-07
+        </time>
+      </div>
 
-        
+      <div class="post-title">
+          <a class="post-title-link" href="/2020/04/07/windows%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81%E5%8D%8F%E8%AE%AE/" itemprop="url">
+            <span itemprop="name">windows身份认证协议</span>
+          </a>
+      </div>
 
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/2020/03/23/CSP%E7%AD%96%E7%95%A5%E7%9A%84%E7%BB%95%E8%BF%87/" rel="prev" title="CSP策略的绕过总结">
-      <i class="fa fa-chevron-left"></i> CSP策略的绕过总结
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/04/07/windows%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81%E5%8D%8F%E8%AE%AE/" rel="next" title="windows身份认证协议">
-      windows身份认证协议 <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
+    </header>
   </article>
+
+
+    </div>
+  </div>
   
   
   
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/archives/2020/04/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/archives/2020/04/">1</a><span class="page-number current">2</span>
+  </nav>
 
 
 
@@ -303,7 +253,6 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#POP链"><span class="nav-number">1.</span> <span class="nav-text">POP链</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

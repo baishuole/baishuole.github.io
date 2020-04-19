@@ -28,7 +28,7 @@
 <meta property="og:description" content="撸起袖子加油学">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-04-16T12:07:38.000Z">
-<meta property="article:modified_time" content="2020-04-18T09:57:12.455Z">
+<meta property="article:modified_time" content="2020-04-19T06:44:09.990Z">
 <meta property="article:author" content="baishuo">
 <meta name="twitter:card" content="summary">
 
@@ -195,7 +195,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-18 17:57:12" itemprop="dateModified" datetime="2020-04-18T17:57:12+08:00">2020-04-18</time>
+                <time title="修改时间：2020-04-19 14:44:09" itemprop="dateModified" datetime="2020-04-19T14:44:09+08:00">2020-04-19</time>
               </span>
 
           
@@ -221,6 +221,15 @@
 <p>原因如下：</p>
 <p>​    1、POST body需要以JSON格式发送，而这种格式在HTML表单元素来构建会比较麻烦。</p>
 <p>​    2、Content-Type头需要设置application/json。设置自定义header需要使用XMLHttpRequests，而它还会向服务器端发送OPTIONS预检请求。</p>
+<p>​    <strong>存在改漏洞需要满足的条件</strong></p>
+<pre><code>1.    web应用身份验证机制是基于Cookie形式
+2.    web应用的HTTP请求种无针对用户的特定token保护
+3.    web应用的HTTP请求无同源策略保护</code></pre><p>如果具备上述三个条件，那么就可以从其它源种以创建AJAX请求的方式实现JSON请求伪造。</p>
+<p><strong>AJAX</strong></p>
+<p>​    AJAX是用Javascript执行异步网络请求，简言之就是异步javascript和XML。</p>
+<p>​    可以通过和服务器的交互实现网页中部分信息的更新，这就使我们在只需要进行少数据更新的情况下，避免整个网页数据的再次加载，提升了开发性能。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span> <span class="attr">onload</span>=<span class="string">'document.forms[0].submit()'</span>&gt;</span><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"https://&lt;vulnerable-url&gt;?_method=PUT"</span> <span class="attr">method</span>=<span class="string">"POST"</span> <span class="attr">enctype</span>=<span class="string">"text/plain"</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span>=<span class="string">'&#123;"username":"blob","dummy":"'</span> <span class="attr">value</span>=<span class="string">'"&#125;'</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"send"</span>&gt;</span><span class="tag">&lt;/<span class="name">form</span>&gt;</span><span class="comment">&lt;!---This results in a request body of:&#123;"username":"blob", "dummy": "="&#125; --&gt;</span></span><br></pre></td></tr></table></figure>
+
 <p><strong>情况一、不验证CONTENT-TYPE的情况</strong></p>
 <p>如果服务端没有校验Content-Type,或者没有严格校验Content-Type是否为application/json，我们可以使用XHR(XMLHttpRequests)来实现csrf。</p>
 <p>POC：</p>
@@ -361,7 +370,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-count">16</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

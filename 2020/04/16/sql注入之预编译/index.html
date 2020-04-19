@@ -20,19 +20,19 @@
     var CONFIG = {"hostname":"lnva9say.top","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="复现">
+  <meta name="description" content="对预编译通俗的理解就是四个字绑定变量。至于安全问题 看情况。有的位置不对，预编译还是有问题的">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Laravel 5.8x 反序列化">
-<meta property="og:url" content="https://lnva9say.top/2020/03/24/Laravel-5-8x-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/index.html">
+<meta property="og:title" content="sql注入之预编译">
+<meta property="og:url" content="https://lnva9say.top/2020/04/16/sql%E6%B3%A8%E5%85%A5%E4%B9%8B%E9%A2%84%E7%BC%96%E8%AF%91/index.html">
 <meta property="og:site_name" content="baishuo">
-<meta property="og:description" content="复现">
+<meta property="og:description" content="对预编译通俗的理解就是四个字绑定变量。至于安全问题 看情况。有的位置不对，预编译还是有问题的">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-03-24T15:33:28.000Z">
-<meta property="article:modified_time" content="2020-04-18T09:54:33.649Z">
+<meta property="article:published_time" content="2020-04-16T14:49:24.000Z">
+<meta property="article:modified_time" content="2020-04-19T07:02:26.363Z">
 <meta property="article:author" content="baishuo">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://lnva9say.top/2020/03/24/Laravel-5-8x-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">
+<link rel="canonical" href="https://lnva9say.top/2020/04/16/sql%E6%B3%A8%E5%85%A5%E4%B9%8B%E9%A2%84%E7%BC%96%E8%AF%91/">
 
 
 <script id="page-configurations">
@@ -45,7 +45,7 @@
   };
 </script>
 
-  <title>Laravel 5.8x 反序列化 | baishuo</title>
+  <title>sql注入之预编译 | baishuo</title>
   
 
 
@@ -165,7 +165,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://lnva9say.top/2020/03/24/Laravel-5-8x-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">
+    <link itemprop="mainEntityOfPage" href="https://lnva9say.top/2020/04/16/sql%E6%B3%A8%E5%85%A5%E4%B9%8B%E9%A2%84%E7%BC%96%E8%AF%91/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/baishuo.jpg">
@@ -178,7 +178,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Laravel 5.8x 反序列化
+          sql注入之预编译
         </h1>
 
         <div class="post-meta">
@@ -188,18 +188,18 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-03-24 23:33:28" itemprop="dateCreated datePublished" datetime="2020-03-24T23:33:28+08:00">2020-03-24</time>
+              <time title="创建时间：2020-04-16 22:49:24" itemprop="dateCreated datePublished" datetime="2020-04-16T22:49:24+08:00">2020-04-16</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-18 17:54:33" itemprop="dateModified" datetime="2020-04-18T17:54:33+08:00">2020-04-18</time>
+                <time title="修改时间：2020-04-19 15:02:26" itemprop="dateModified" datetime="2020-04-19T15:02:26+08:00">2020-04-19</time>
               </span>
 
           
-            <div class="post-description">复现</div>
+            <div class="post-description">对预编译通俗的理解就是四个字绑定变量。至于安全问题 看情况。有的位置不对，预编译还是有问题的</div>
 
         </div>
       </header>
@@ -210,19 +210,36 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="POP链"><a href="#POP链" class="headerlink" title="POP链"></a>POP链</h2><p>1、PendingBroadcast类__desruct</p>
-<p>2、Dispatcher类的dispatch方法</p>
-<p>3、commandShouldBeQueued方法PendingBroadcast的 $this-&gt;event -&gt;QueuedCommand   绕过dispatch中的if </p>
-<p>跟进dispatchToQueue()方法 call_user_func的$this-&gt;queueResolver可控,可定义调用任何方法</p>
-<p>$connect=QueuedCommand-&gt;connect</p>
-<p>4、找到命令执行点EvalLoader类中load方法中的eval()函数</p>
-<p>5、绕过class_exists   跟进getClassName()到MockDefinition类中</p>
-<p>6、跟进getName() $this-&gt;name 可控  返回一个不存在的类</p>
-<p>7、getName()=getClassName()=不存在的类回到EvalLoader类跳过if</p>
-<p>8、进到eval() 跟进getcode() 可控  可命令执行</p>
-<p>9、回到Dispatcher类中的dispatchToQueue() </p>
-<p>$this-&gt;events=dispatcher类中的$this-&gt;queueResolver   - &gt;  EvalLoader =类中的load方法</p>
-<p>$this-&gt;event -&gt; QueuedCommand</p>
+        <h3 id="sql注入预编译"><a href="#sql注入预编译" class="headerlink" title="sql注入预编译"></a>sql注入预编译</h3><p>​    <strong>1、介绍</strong></p>
+<p>​        从mysql角度来说：通常情况下，数据库接收到一条普通的sql语句后，首先对其进行语义解析，随后对此条SQL语句进行优化并制定执行计划并执行；当采用预编译操作时，首先将待执行的SQL语句中的参数值用占位符替代。当带着占位符的SQL语句模板被数据库编译、解析后，再通过向占位符绑定参数进行查询操作。</p>
+<p>​    <strong>2、接口默认使用方式</strong></p>
+<p>​        2.1    PHP-PDO：默认情况下PDO使用模拟预处理，将PDO::ATTR_EMULATE_PREPARES设置为false后，使用的是mysql数据库预编译.</p>
+<p>​                PHP数据对象，它提供了一个轻量级的接口，使得我们不管使用哪种数据库，都可以用相同的函数来查询和获取数据，同时，它的预编译机制可以用来防止sql注入。PDD有两种模式：本地预处理和模拟预处理。</p>
+<p>​                模拟预处理用于数据库不支持预编译机制的情况，其本质是在底层先对用户输入进行转义后，再对SQL语句进行拼接，然后将完整的语句发送给数据库执行。任何可控的拼接都是具有一定危险性</p>
+<p>​                本地预处理则是通过数据库的预编译机制来完成，是真正的预编译机制。</p>
+<p>​        2.2    PHP-Mysqli：Pymysql也默认使用模拟预处理</p>
+<p>​        2.3    Python-Oursql：存在Prepare过程，这是一个sql预编译过程，Oursql使用的是sql数据</p>
+<p>预处理。</p>
+<p>​        2.4    Python-Pymysql</p>
+<p>​        2.5    Python-Oursql</p>
+<p>​    <strong>预编译防止注入的原因</strong></p>
+<p>​        通常来说，再Mysql中，一条SQL语句从传入到执行经历了以下过程：检查缓存、规则验证、解析器解析为语法树、预处理器进一步验证语法树、优化SQL、生成执行计划、执行。</p>
+<p>​        预编译使用占用符代替字段值的部分，将SQL语句先交由数据库预处理，构建语法树，再传入真正的字段值多次执。</p>
+<p>​    <strong>使用预编译是否安全</strong></p>
+<p>​        首先，开发人员是否能够正确的使用预编译。有时候开发者虽然使用了预编译机制，但参数值是由加号拼接上去的，而不是正确的使用参数绑定，这样仍是可以造成sql注入</p>
+<p>​        其次，并不是所有参数都可预编译，如：</p>
+<p>​            表名和列名是不能够预编译的，这是由于生成语法树的过程中，预处理器在进一步检查解析后的语法树时，会检查数据表和数据列是否存在，因此数据表和数据列不能被占位符所替代。在很多业务场景中，表明需要作为一个变量存在，因此这部分仍需要由加号进行SQL语句的拼接，若表名时由外部传入且可控的，仍会造成SQL注入。</p>
+<p>​        同理，ORDER BY后的ASC/DESC也不能被预编译，当业务场景涉及到用户可控制排序方式，且ASC/DESC是由前台传入并拼接到SQL语句上时，就可能出现危险。</p>
+<p>​        3.1    java白盒：并不是使用了预编译PreparedStatement一定就可以防止SQL注入，动态拼接SQL同样存在SQLi注入，这也是实际审计中高发的问题。预编译有误。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String query &#x3D; &quot;SELECT * FROM usersWHERE userid &#x3D;&#39;&quot;+ userid + &quot;&#39;&quot; + &quot; AND password&#x3D;&#39;&quot; +password + &quot;&#39;&quot;;  PreparedStatement stmt &#x3D;connection.prepareStatement(query);  ResultSet rs &#x3D; stmt.executeQuery();</span><br></pre></td></tr></table></figure>
+
+<p>​            定位预编译可以通过搜索关键函数：setObject()、setInt()、setString()、setSQLXML()</p>
+<p>​        3.2    order by 绕过预编译：类似下面sql语句 order by 后面是不能用预编译处理的只能通过拼接处理，只能手动进行过滤</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String sql &#x3D; “Select * from news where title &#x3D;?”+ “order by‘” + time + “’asc”</span><br></pre></td></tr></table></figure>
+
+<p>​        3.3    %和_绕过预编译：预编译是不能处理%，需要手动过滤，否则会造成慢查询和DOS。</p>
+<p>​        3.4    SQLi检测绕过：若SQL在处理过程中经过黑/白名单（正则）或Filter检测,通常检测代码存在缺陷则可进行绕过。</p>
+<p>​    </p>
 
     </div>
 
@@ -238,12 +255,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/03/23/CSP%E7%AD%96%E7%95%A5%E7%9A%84%E7%BB%95%E8%BF%87/" rel="prev" title="CSP策略的绕过总结">
-      <i class="fa fa-chevron-left"></i> CSP策略的绕过总结
+    <a href="/2020/04/16/Redis-getshell/" rel="prev" title="Redis getshell">
+      <i class="fa fa-chevron-left"></i> Redis getshell
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/04/07/windows%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81%E5%8D%8F%E8%AE%AE/" rel="next" title="windows身份认证协议">
-      windows身份认证协议 <i class="fa fa-chevron-right"></i>
+    <a href="/2020/04/17/%E5%86%85%E7%BD%91SAM%E3%80%81WMI%E3%80%81SMB%E5%8D%8F%E8%AE%AE/" rel="next" title="内网渗透知识基础">
+      内网渗透知识基础 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -303,7 +320,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#POP链"><span class="nav-number">1.</span> <span class="nav-text">POP链</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#sql注入预编译"><span class="nav-number">1.</span> <span class="nav-text">sql注入预编译</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
